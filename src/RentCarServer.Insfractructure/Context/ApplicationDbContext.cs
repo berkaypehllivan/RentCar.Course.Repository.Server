@@ -1,17 +1,20 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using GenericRepository;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RentCarServer.Domain.Abstractions;
+using RentCarServer.Domain.Users;
 using System.Security.Claims;
 
 namespace RentCarServer.Insfractructure.Context;
 
-internal sealed class ApplicationDbContext : DbContext
+internal sealed class ApplicationDbContext : DbContext, IUnitOfWork
 {
     public ApplicationDbContext(DbContextOptions options) : base(options)
     {
     }
 
+    public DbSet<User> Users { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
@@ -33,12 +36,12 @@ internal sealed class ApplicationDbContext : DbContext
 
         HttpContextAccessor httpContextAccessor = new();
         string userIdString =
-            httpContextAccessor
-            .HttpContext!
-            .User
-            .Claims
-            .First(p => p.Type == ClaimTypes.NameIdentifier)
-            .Value;
+        httpContextAccessor
+        .HttpContext!
+        .User
+        .Claims
+        .First(p => p.Type == ClaimTypes.NameIdentifier)
+        .Value;
 
         Guid userId = Guid.Parse(userIdString);
         IdentityId identityId = new(userId);
@@ -74,7 +77,7 @@ internal sealed class ApplicationDbContext : DbContext
             if (entry.State == EntityState.Deleted)
                 throw new ArgumentException("Db'den direkt silme işlemi yapılamaz!");
         }
-        return base.SaveChangesAsync(cancellationToken);
+        return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
     }
 }
 
