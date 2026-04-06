@@ -40,16 +40,9 @@ builder.Services
     .Expand()
     .OrderBy()
     .SetMaxTop(null)
-    );
-
-builder.Services.AddResponseCompression(opt =>
-opt.EnableForHttps = true
+    ); builder.Services.AddResponseCompression(opt => opt.EnableForHttps = true
 );
-
-builder.Services.AddCors();
-
 builder.Services.AddExceptionHandler<ExceptionHandler>().AddProblemDetails();
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -57,26 +50,22 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
-
 app.UseHttpsRedirection();
 app.UseCors(x => x
 .AllowAnyHeader()
 .AllowAnyOrigin()
 .AllowAnyMethod()
 .SetPreflightMaxAge(TimeSpan.FromMinutes(10)));
-
 app.UseResponseCompression();
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.UseRateLimiter();
 app.UseExceptionHandler();
-
 app.MapControllers()
     .RequireRateLimiting("fixed")
     .RequireAuthorization();
 app.MapAuth();
-
 app.MapGet("/", () => "Hello world").RequireAuthorization();
+
 // await app.CreateFirstUser();
 app.Run();
