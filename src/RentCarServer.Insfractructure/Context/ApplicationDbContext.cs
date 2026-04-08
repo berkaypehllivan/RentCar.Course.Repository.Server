@@ -35,14 +35,18 @@ internal sealed class ApplicationDbContext : DbContext, IUnitOfWork
         var entries = ChangeTracker.Entries<Entity>();
 
         HttpContextAccessor httpContextAccessor = new();
-        string userIdString =
+        string? userIdString =
         httpContextAccessor
         .HttpContext!
         .User
         .Claims
-        .First(p => p.Type == ClaimTypes.NameIdentifier)
+        .FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier)?
         .Value;
 
+        if (userIdString is null)
+        {
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
         Guid userId = Guid.Parse(userIdString);
         IdentityId identityId = new(userId);
 
@@ -61,14 +65,14 @@ internal sealed class ApplicationDbContext : DbContext, IUnitOfWork
                 if (entry.Property(p => p.IsDeleted).CurrentValue == true)
                 {
                     entry.Property(p => p.DeletedAt)
-    .CurrentValue = DateTimeOffset.Now;
+                    .CurrentValue = DateTimeOffset.Now;
                     entry.Property(p => p.DeletedBy)
                         .CurrentValue = identityId;
                 }
                 else
                 {
                     entry.Property(p => p.UpdatedAt)
-.CurrentValue = DateTimeOffset.Now;
+                    .CurrentValue = DateTimeOffset.Now;
                     entry.Property(p => p.UpdatedBy)
                         .CurrentValue = identityId;
                 }

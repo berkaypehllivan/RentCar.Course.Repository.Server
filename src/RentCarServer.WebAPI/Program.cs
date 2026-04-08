@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.OData;
 using Microsoft.AspNetCore.RateLimiting;
 using RentCarServer.Application;
+using RentCarServer.Application.Services;
 using RentCarServer.Insfractructure;
 using RentCarServer.WebAPI;
 using RentCarServer.WebAPI.Modules;
@@ -16,6 +17,13 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddRateLimiter(cfr =>
 {
+    cfr.AddFixedWindowLimiter("fixed", opt =>
+    {
+        opt.PermitLimit = 100;
+        opt.QueueLimit = 100;
+        opt.Window = TimeSpan.FromSeconds(1);
+        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+    });
     cfr.AddFixedWindowLimiter("login-fixed", opt =>
     {
         opt.PermitLimit = 3;
@@ -23,11 +31,10 @@ builder.Services.AddRateLimiter(cfr =>
         opt.Window = TimeSpan.FromMinutes(1);
         opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
     });
-    cfr.AddFixedWindowLimiter("fixed", opt =>
+    cfr.AddFixedWindowLimiter("forgot-password-fixed", opt =>
     {
-        opt.PermitLimit = 100;
-        opt.QueueLimit = 100;
-        opt.Window = TimeSpan.FromSeconds(1);
+        opt.PermitLimit = 1;
+        opt.Window = TimeSpan.FromSeconds(5);
         opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
     });
 });
@@ -65,7 +72,12 @@ app.MapControllers()
     .RequireRateLimiting("fixed")
     .RequireAuthorization();
 app.MapAuth();
-app.MapGet("/", () => "Hello world").RequireAuthorization();
+
+app.MapGet("/", async (IMailService mailService) =>
+{
+    await mailService.SendAsync("berkaypehlivan75@gmail.com", "Test", "<h1><b>Bu bir test mailidir.</b></h1>", default);
+    return Results.Ok();
+});
 
 // await app.CreateFirstUser();
 app.Run();
