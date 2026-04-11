@@ -15,7 +15,7 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.ComplexProperty(i => i.FullName);
         builder.ComplexProperty(i => i.Email);
         builder.ComplexProperty(i => i.UserName);
-        builder.ComplexProperty(i => i.ForgotPasswordId);
+        builder.ComplexProperty(i => i.ForgotPasswordCode);
         builder.ComplexProperty(i => i.ForgotPasswordDate);
         builder.ComplexProperty(i => i.IsForgotPasswordCompleted);
 

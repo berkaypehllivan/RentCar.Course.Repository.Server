@@ -29,7 +29,7 @@ internal sealed class ForgotPasswordHandler(IUserRepository userRepository, IUni
         if (user == null)
             return Result<string>.Failure("Kullanıcı bulunamadı!");
 
-        user.CreateForgotPasswordId();
+        user.CreateForgotPasswordCode();
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         string to = user.Email.Value;
@@ -372,7 +372,7 @@ internal sealed class ForgotPasswordHandler(IUserRepository userRepository, IUni
 </html>";
 
         body = body.Replace("{UserName}", user.FirstName.Value + " " + user.LastName.Value);
-        body = body.Replace("{ResetPasswordUrl}", $"http://localhost:4200/forgot-password/{user.ForgotPasswordId!.Value}");
+        body = body.Replace("{ResetPasswordUrl}", $"http://localhost:4200/reset-password/{user.ForgotPasswordCode!.Value}");
         await mailService.SendAsync(to, subject, body, cancellationToken = default);
 
         return "Şifre sıfırlama mailiniz gönderilmiştir. Lütfen email adresinizi kontrol ediniz!";
