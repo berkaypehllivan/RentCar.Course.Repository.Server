@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RentCarServer.Domain.Abstractions;
+using RentCarServer.Domain.LoginTokens;
 using RentCarServer.Domain.Users;
 using System.Security.Claims;
 
@@ -15,6 +16,7 @@ internal sealed class ApplicationDbContext : DbContext, IUnitOfWork
     }
 
     public DbSet<User> Users { get; set; }
+    public DbSet<LoginToken> LoginToken { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
@@ -37,7 +39,7 @@ internal sealed class ApplicationDbContext : DbContext, IUnitOfWork
         HttpContextAccessor httpContextAccessor = new();
         string? userIdString =
         httpContextAccessor
-        .HttpContext!
+        .HttpContext?
         .User
         .Claims
         .FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier)?

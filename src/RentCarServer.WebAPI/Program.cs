@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.OData;
 using Microsoft.AspNetCore.RateLimiting;
 using RentCarServer.Application;
-using RentCarServer.Application.Services;
 using RentCarServer.Insfractructure;
 using RentCarServer.WebAPI;
+using RentCarServer.WebAPI.Middlewares;
 using RentCarServer.WebAPI.Modules;
 using Scalar.AspNetCore;
 using System.Threading.RateLimiting;
@@ -45,7 +45,7 @@ builder.Services.AddRateLimiter(cfr =>
         opt.Window = TimeSpan.FromMinutes(1);
         opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
     });
-    cfr.AddFixedWindowLimiter("check-forgot-password-code", opt =>
+    cfr.AddFixedWindowLimiter("check-forgot-password-code-fixed", opt =>
     {
         opt.PermitLimit = 5;
         opt.Window = TimeSpan.FromMinutes(1);
@@ -65,6 +65,9 @@ builder.Services.AddResponseCompression(opt =>
 });
 
 builder.Services.AddExceptionHandler<ExceptionHandler>().AddProblemDetails();
+
+builder.Services.AddTransient<CheckTokenMiddleware>();
+builder.Services.AddHostedService<CheckLoginTokenBackgroundService>();
 
 var app = builder.Build();
 
@@ -99,6 +102,7 @@ app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<CheckTokenMiddleware>();
 
 // --- 3. ENDPOINT TANIMLAMALARI ---
 
@@ -108,12 +112,6 @@ app.MapControllers()
 
 app.MapAuth(); // Auth modülündeki endpointler burada register edilir
 
-app.MapGet("/", async (IMailService mailService) =>
-{
-    await mailService.SendAsync("berkaypehlivan75@gmail.com", "Test", "<h1><b>Bu bir test mailidir.</b></h1>", default);
-    return Results.Ok();
-});
-
-// app.MapGet("/check-forgot-password-code/..." zaten MapAuth() içinde veya Controller'daysa orada kalmalı
+app.MapGet("/", () => "Hello world").RequireAuthorization();
 
 app.Run();
