@@ -22,14 +22,12 @@ builder.Services.AddRateLimiter(cfr =>
     cfr.AddFixedWindowLimiter("fixed", opt =>
     {
         opt.PermitLimit = 100;
-        opt.QueueLimit = 100;
         opt.Window = TimeSpan.FromSeconds(1);
         opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
     });
     cfr.AddFixedWindowLimiter("login-fixed", opt =>
     {
         opt.PermitLimit = 3;
-        opt.QueueLimit = 2;
         opt.Window = TimeSpan.FromMinutes(1);
         opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
     });

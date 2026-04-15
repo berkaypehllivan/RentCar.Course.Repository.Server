@@ -16,8 +16,17 @@ public static class AuthModule
                 var res = await sender.Send(request, cancellationToken);
                 return res.IsSuccessful ? Results.Ok(res) : Results.InternalServerError(res);
             })
-            .Produces<Result<string>>()
+            .Produces<Result<LoginCommandResponse>>()
             .RequireRateLimiting("login-fixed");
+
+        app.MapPost("/login-with-tfa",
+    async (LoginWithTFACommand request, ISender sender, CancellationToken cancellationToken) =>
+    {
+        var res = await sender.Send(request, cancellationToken);
+        return res.IsSuccessful ? Results.Ok(res) : Results.InternalServerError(res);
+    })
+    .Produces<Result<LoginCommandResponse>>()
+    .RequireRateLimiting("login-fixed");
 
         app.MapPost("/forgot-password/{email}",
             async (string email, ISender sender, CancellationToken cancellationToken) =>

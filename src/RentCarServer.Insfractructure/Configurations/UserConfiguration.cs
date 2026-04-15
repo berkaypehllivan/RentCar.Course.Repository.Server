@@ -18,6 +18,11 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.ComplexProperty(i => i.ForgotPasswordCode);
         builder.ComplexProperty(i => i.ForgotPasswordDate);
         builder.ComplexProperty(i => i.IsForgotPasswordCompleted);
+        builder.ComplexProperty(i => i.TFAStatus);
+        builder.ComplexProperty(i => i.TFACode);
+        builder.ComplexProperty(i => i.TFAConfirmCode);
+        builder.ComplexProperty(i => i.TFAExpiresDate);
+        builder.ComplexProperty(i => i.TFAIsCompleted);
 
     }
 }
