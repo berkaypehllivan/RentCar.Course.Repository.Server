@@ -7,7 +7,6 @@ public abstract class Entity
         Id = new IdentityId(Guid.CreateVersion7());
         IsActive = true;
     }
-
     public IdentityId Id { get; private set; }
     public bool IsActive { get; private set; }
     public DateTimeOffset CreatedAt { get; private set; }
@@ -28,7 +27,6 @@ public abstract class Entity
         IsDeleted = true;
     }
 }
-
 public sealed record IdentityId(Guid Value)
 {
     public static implicit operator Guid(IdentityId id) => id.Value;

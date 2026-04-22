@@ -3,8 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using RentCarServer.Domain.Branchs;
 using RentCarServer.Insfractructure.Context;
 using RentCarServer.Insfractructure.Options;
+using RentCarServer.Insfractructure.Repositories;
 using Scrutor;
 
 namespace RentCarServer.Insfractructure;

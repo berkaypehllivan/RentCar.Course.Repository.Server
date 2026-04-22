@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using RentCarServer.Application;
 using RentCarServer.Insfractructure;
 using RentCarServer.WebAPI;
+using RentCarServer.WebAPI.Controllers;
 using RentCarServer.WebAPI.Middlewares;
 using RentCarServer.WebAPI.Modules;
 using Scalar.AspNetCore;
@@ -12,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // --- 1. SERVİS KAYITLARI (DEPENDENCY INJECTION) ---
 
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi("v1", options => { options.AddDocumentTransformer<BearerSecuritySchemeTransformer>(); });
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -54,7 +55,7 @@ builder.Services.AddRateLimiter(cfr =>
 builder.Services
     .AddControllers()
     .AddOData(opt =>
-        opt.Select().Filter().Count().Expand().OrderBy().SetMaxTop(null)
+        opt.Select().Filter().Count().Expand().OrderBy().SetMaxTop(null).AddRouteComponents("odata", MainODataController.GetEdmModel())
     );
 
 builder.Services.AddResponseCompression(opt =>
@@ -109,6 +110,7 @@ app.MapControllers()
     .RequireAuthorization();
 
 app.MapAuth(); // Auth modülündeki endpointler burada register edilir
+app.MapBranch();
 
 app.MapGet("/", () => "Hello world").RequireAuthorization();
 
