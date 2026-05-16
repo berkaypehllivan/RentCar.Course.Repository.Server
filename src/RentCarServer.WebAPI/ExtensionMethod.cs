@@ -1,4 +1,5 @@
 ﻿using GenericRepository;
+using RentCarServer.Application.Services;
 using RentCarServer.Domain.Users;
 using RentCarServer.Domain.Users.ValueObjects;
 
@@ -16,7 +17,7 @@ public static class ExtensionMethod
         {
             FirstName firstName = new("Berkay");
             LastName lastName = new("Pehlivan");
-            Email email = new("berkaypehlivan1@gmail.com");
+            Email email = new("berkaypehlivan75@gmail.com");
             UserName userName = new("admin");
             Password password = new("123");
 
@@ -30,5 +31,13 @@ public static class ExtensionMethod
             userRepository.Add(user);
             await unitOfWork.SaveChangesAsync();
         }
+    }
+
+    public static async Task CleanRemovedPermissionsFromRoleAsync(this WebApplication application)
+    {
+        using var scoped = application.Services.CreateScope();
+        var srv = scoped.ServiceProvider;
+        var service = srv.GetRequiredService<PermissionCleanerService>();
+        await service.CleanRemovedPermissionsFromRolesAsync();
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RentCarServer.Insfractructure.Context;
 
@@ -12,9 +13,11 @@ using RentCarServer.Insfractructure.Context;
 namespace RentCarServer.Insfractructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260503112240_i_added_role_table")]
+    partial class i_added_role_table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -320,34 +323,6 @@ namespace RentCarServer.Insfractructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users", (string)null);
-                });
-
-            modelBuilder.Entity("RentCarServer.Domain.Roles.Role", b =>
-                {
-                    b.OwnsMany("RentCarServer.Domain.Roles.Permission", "Permissions", b1 =>
-                        {
-                            b1.Property<Guid>("RoleId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(MAX)");
-
-                            b1.HasKey("RoleId", "Id");
-
-                            b1.ToTable("Permission");
-
-                            b1.WithOwner()
-                                .HasForeignKey("RoleId");
-                        });
-
-                    b.Navigation("Permissions");
                 });
 #pragma warning restore 612, 618
         }

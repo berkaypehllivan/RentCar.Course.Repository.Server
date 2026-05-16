@@ -8,6 +8,7 @@ internal sealed class LoginTokenConfiguration : IEntityTypeConfiguration<LoginTo
 {
     public void Configure(EntityTypeBuilder<LoginToken> builder)
     {
+        builder.ToTable("LoginTokens");
         builder.HasKey(x => x.Id);
         builder.ComplexProperty(p => p.Token);
         builder.ComplexProperty(p => p.ExpiresDate);

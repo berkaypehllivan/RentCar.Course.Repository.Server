@@ -3,9 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RentCarServer.Domain.Abstractions;
-using RentCarServer.Domain.Branches;
-using RentCarServer.Domain.LoginTokens;
-using RentCarServer.Domain.Users;
 using System.Security.Claims;
 
 namespace RentCarServer.Insfractructure.Context;
@@ -16,9 +13,6 @@ internal sealed class ApplicationDbContext : DbContext, IUnitOfWork
     {
     }
 
-    public DbSet<User> Users { get; set; }
-    public DbSet<LoginToken> LoginToken { get; set; }
-    public DbSet<Branch> Branches { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
@@ -34,7 +28,7 @@ internal sealed class ApplicationDbContext : DbContext, IUnitOfWork
         base.ConfigureConventions(configurationBuilder);
     }
 
-    public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         var entries = ChangeTracker.Entries<Entity>();
 
@@ -49,13 +43,16 @@ internal sealed class ApplicationDbContext : DbContext, IUnitOfWork
 
         if (userIdString is null)
         {
-            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+            return base.SaveChangesAsync(cancellationToken);
         }
+
         Guid userId = Guid.Parse(userIdString);
         IdentityId identityId = new(userId);
 
         foreach (var entry in entries)
         {
+            Console.WriteLine($"Varlık: {entry.Entity.GetType().Name} | Durum: {entry.State} | ID: {entry.Property("Id").CurrentValue}");
+
             if (entry.State == EntityState.Added)
             {
                 entry.Property(p => p.CreatedAt)
@@ -71,23 +68,27 @@ internal sealed class ApplicationDbContext : DbContext, IUnitOfWork
                     entry.Property(p => p.DeletedAt)
                     .CurrentValue = DateTimeOffset.Now;
                     entry.Property(p => p.DeletedBy)
-                        .CurrentValue = identityId;
+                    .CurrentValue = identityId;
                 }
                 else
                 {
                     entry.Property(p => p.UpdatedAt)
-                    .CurrentValue = DateTimeOffset.Now;
+                        .CurrentValue = DateTimeOffset.Now;
                     entry.Property(p => p.UpdatedBy)
-                        .CurrentValue = identityId;
+                    .CurrentValue = identityId;
                 }
             }
 
             if (entry.State == EntityState.Deleted)
-                throw new ArgumentException("Db'den direkt silme işlemi yapılamaz!");
+            {
+                throw new ArgumentException("Db'den direkt silme işlemi yapamazsınız");
+            }
         }
-        return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+
+        return base.SaveChangesAsync(cancellationToken);
     }
 }
+
 
 internal sealed class IdentityIdValueConverter : ValueConverter<IdentityId, Guid>
 {

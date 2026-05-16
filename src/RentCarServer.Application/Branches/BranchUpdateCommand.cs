@@ -1,12 +1,14 @@
 ﻿using FluentValidation;
 using GenericRepository;
+using RentCarServer.Application.Behaviors;
 using RentCarServer.Domain.Branchs;
-using RentCarServer.Domain.Branchs.ValueObjects;
+using RentCarServer.Domain.Shared;
 using TS.MediatR;
 using TS.Result;
 
 namespace RentCarServer.Application.Branches;
 
+[Permission("branch:edit")]
 public sealed record BranchUpdateCommand(
     Guid Id,
     string Name,
