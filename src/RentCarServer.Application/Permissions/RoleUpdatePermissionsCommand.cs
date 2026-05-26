@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using GenericRepository;
+﻿using GenericRepository;
+using RentCarServer.Application.Behaviors;
 using RentCarServer.Domain.Roles;
 using TS.MediatR;
 using TS.Result;
 
 namespace RentCarServer.Application.Permissions;
 
+[Permission("role:update_permissions")]
 public sealed record RoleUpdatePermissionsCommand(
     Guid RoleId,
     List<string> Permissions) : IRequest<Result<string>>;

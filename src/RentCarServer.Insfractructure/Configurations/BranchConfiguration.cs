@@ -12,5 +12,6 @@ internal class BranchConfiguration : IEntityTypeConfiguration<Branch>
         builder.HasKey(x => x.Id);
         builder.ComplexProperty(i => i.Name);
         builder.ComplexProperty(i => i.Address);
+        builder.ComplexProperty(i => i.Contact);
     }
 }

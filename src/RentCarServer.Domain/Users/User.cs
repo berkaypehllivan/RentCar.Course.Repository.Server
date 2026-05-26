@@ -5,7 +5,7 @@ namespace RentCarServer.Domain.Users;
 
 public sealed class User : Entity
 {
-    public User(FirstName firstName, LastName lastName, Email email, UserName userName, Password password)
+    public User(FirstName firstName, LastName lastName, Email email, UserName userName, Password password, IdentityId branchId, IdentityId roleId, bool isActive)
     {
         SetFirstName(firstName);
         SetLastName(lastName);
@@ -15,6 +15,9 @@ public sealed class User : Entity
         SetFullName();
         SetIsForgotPasswordCompleted(new(true));
         SetTFAStatus(new(false));
+        SetBranchId(branchId);
+        SetRoleId(roleId);
+        SetStatus(isActive);
     }
 
     private User() { }
@@ -33,6 +36,9 @@ public sealed class User : Entity
     public TFAConfirmCode? TFAConfirmCode { get; private set; } = default!;
     public TFAExpiresDate? TFAExpiresDate { get; private set; } = default!;
     public TFAIsCompleted? TFAIsCompleted { get; private set; } = default!;
+    public IdentityId BranchId { get; private set; } = default!;
+    public IdentityId RoleId { get; private set; } = default!;
+
 
     #region Behaviors
 
@@ -80,6 +86,10 @@ public sealed class User : Entity
     }
 
     public void SetTFAIsCompleted() => TFAIsCompleted = new(true);
+
+    public void SetBranchId(IdentityId branchId) => BranchId = branchId;
+
+    public void SetRoleId(IdentityId roleId) => RoleId = roleId;
 
     #endregion
 }

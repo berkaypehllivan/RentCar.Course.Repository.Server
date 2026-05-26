@@ -13,6 +13,7 @@ namespace RentCarServer.Application.Branches;
 public sealed record BranchCreateCommand(
     string Name,
     Address Address,
+    Contact Contact,
     bool IsActive
     ) : IRequest<Result<string>>;
 
@@ -24,7 +25,7 @@ public sealed class BranchCreateCommandValidator : AbstractValidator<BranchCreat
         RuleFor(i => i.Address.City).NotEmpty().WithMessage("Geçerli bir şehir giriniz!");
         RuleFor(i => i.Address.District).NotEmpty().WithMessage("Geçerli bir ilçe giriniz!");
         RuleFor(i => i.Address.FullAddress).NotEmpty().WithMessage("Geçerli bir tam adres giriniz!");
-        RuleFor(i => i.Address.PhoneNumber1).NotEmpty().WithMessage("Geçerli bir telefon numarası giriniz!");
+        RuleFor(i => i.Contact.PhoneNumber1).NotEmpty().WithMessage("Geçerli bir telefon numarası giriniz!");
     }
 }
 
@@ -38,7 +39,8 @@ internal sealed class BranchCreateCommandHandler(IBranchRepository branchReposit
 
         Name name = new(request.Name);
         Address address = request.Address;
-        Branch branch = new(name, address, request.IsActive);
+        Contact contact = request.Contact;
+        Branch branch = new(name, address, contact, request.IsActive);
         branchRepository.Add(branch);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

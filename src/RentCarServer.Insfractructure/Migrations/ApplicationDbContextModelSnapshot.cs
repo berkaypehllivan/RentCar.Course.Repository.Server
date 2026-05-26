@@ -64,11 +64,16 @@ namespace RentCarServer.Insfractructure.Migrations
                                 .IsRequired()
                                 .HasColumnType("nvarchar(MAX)");
 
-                            b1.Property<string>("Email")
+                            b1.Property<string>("FullAddress")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(MAX)");
+                        });
 
-                            b1.Property<string>("FullAddress")
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Contact", "RentCarServer.Domain.Branches.Branch.Contact#Contact", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Email")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(MAX)");
 
@@ -181,6 +186,9 @@ namespace RentCarServer.Insfractructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
@@ -198,6 +206,9 @@ namespace RentCarServer.Insfractructure.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
@@ -341,7 +352,7 @@ namespace RentCarServer.Insfractructure.Migrations
 
                             b1.HasKey("RoleId", "Id");
 
-                            b1.ToTable("Permission");
+                            b1.ToTable("Permission", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("RoleId");

@@ -113,8 +113,11 @@ app.MapAuth(); // Auth modülündeki endpointler burada register edilir
 app.MapBranch();
 app.MapRole();
 app.MapPermission();
+app.MapUser();
 
 app.MapGet("/", () => "Hello world").RequireAuthorization();
+
+//await app.CreateFirstUser();
 
 await app.CleanRemovedPermissionsFromRoleAsync();
 app.Run();
