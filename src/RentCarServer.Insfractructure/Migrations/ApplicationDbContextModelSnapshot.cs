@@ -100,6 +100,49 @@ namespace RentCarServer.Insfractructure.Migrations
                     b.ToTable("Branches", (string)null);
                 });
 
+            modelBuilder.Entity("RentCarServer.Domain.Categories.Category", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Name", "RentCarServer.Domain.Categories.Category.Name#Name", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories", (string)null);
+                });
+
             modelBuilder.Entity("RentCarServer.Domain.LoginTokens.LoginToken", b =>
                 {
                     b.Property<Guid>("Id")
@@ -136,6 +179,65 @@ namespace RentCarServer.Insfractructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("LoginTokens", (string)null);
+                });
+
+            modelBuilder.Entity("RentCarServer.Domain.ProtectionPackages.ProtectionPackage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "IsRecommended", "RentCarServer.Domain.ProtectionPackages.ProtectionPackage.IsRecommended#IsRecommended", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<bool>("Value")
+                                .HasColumnType("bit");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Name", "RentCarServer.Domain.ProtectionPackages.ProtectionPackage.Name#Name", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Price", "RentCarServer.Domain.ProtectionPackages.ProtectionPackage.Price#Price", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<decimal>("Value")
+                                .HasColumnType("money");
+                        });
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProtectionPackages", (string)null);
                 });
 
             modelBuilder.Entity("RentCarServer.Domain.Roles.Role", b =>
@@ -333,6 +435,34 @@ namespace RentCarServer.Insfractructure.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
+            modelBuilder.Entity("RentCarServer.Domain.ProtectionPackages.ProtectionPackage", b =>
+                {
+                    b.OwnsMany("RentCarServer.Domain.ProtectionPackages.ProtectionCoverage", "Coverages", b1 =>
+                        {
+                            b1.Property<Guid>("ProtectionPackageId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+
+                            b1.HasKey("ProtectionPackageId", "Id");
+
+                            b1.ToTable("ProtectionCoverage");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ProtectionPackageId");
+                        });
+
+                    b.Navigation("Coverages");
+                });
+
             modelBuilder.Entity("RentCarServer.Domain.Roles.Role", b =>
                 {
                     b.OwnsMany("RentCarServer.Domain.Roles.Permission", "Permissions", b1 =>
@@ -352,7 +482,7 @@ namespace RentCarServer.Insfractructure.Migrations
 
                             b1.HasKey("RoleId", "Id");
 
-                            b1.ToTable("Permission", (string)null);
+                            b1.ToTable("Permission");
 
                             b1.WithOwner()
                                 .HasForeignKey("RoleId");

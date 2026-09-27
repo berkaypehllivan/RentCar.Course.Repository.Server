@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using RentCarServer.Domain.Abstractions;
+﻿using RentCarServer.Domain.Abstractions;
 using RentCarServer.Domain.Shared;
 
 namespace RentCarServer.Domain.Roles;
