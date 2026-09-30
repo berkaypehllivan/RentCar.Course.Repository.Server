@@ -143,6 +143,66 @@ namespace RentCarServer.Insfractructure.Migrations
                     b.ToTable("Categories", (string)null);
                 });
 
+            modelBuilder.Entity("RentCarServer.Domain.Extras.Extra", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Description", "RentCarServer.Domain.Extras.Extra.Description#Description", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Name", "RentCarServer.Domain.Extras.Extra.Name#Name", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Price", "RentCarServer.Domain.Extras.Extra.Price#Price", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<decimal>("Value")
+                                .HasColumnType("money");
+                        });
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Extras", (string)null);
+                });
+
             modelBuilder.Entity("RentCarServer.Domain.LoginTokens.LoginToken", b =>
                 {
                     b.Property<Guid>("Id")
@@ -437,7 +497,7 @@ namespace RentCarServer.Insfractructure.Migrations
 
             modelBuilder.Entity("RentCarServer.Domain.ProtectionPackages.ProtectionPackage", b =>
                 {
-                    b.OwnsMany("RentCarServer.Domain.ProtectionPackages.ProtectionCoverage", "Coverages", b1 =>
+                    b.OwnsMany("RentCarServer.Domain.ProtectionPackages.ValueObjects.ProtectionCoverage", "Coverages", b1 =>
                         {
                             b1.Property<Guid>("ProtectionPackageId")
                                 .HasColumnType("uniqueidentifier");
