@@ -495,6 +495,300 @@ namespace RentCarServer.Insfractructure.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
+            modelBuilder.Entity("RentCarServer.Domain.Vehicles.Vehicle", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "BranchId", "RentCarServer.Domain.Vehicles.Vehicle.BranchId#IdentityId", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<Guid>("Value")
+                                .HasColumnType("uniqueidentifier");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Brand", "RentCarServer.Domain.Vehicles.Vehicle.Brand#Brand", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "CascoEndDate", "RentCarServer.Domain.Vehicles.Vehicle.CascoEndDate#CascoEndDate", b1 =>
+                        {
+                            b1.Property<DateOnly>("Value")
+                                .HasColumnType("date");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "CategoryId", "RentCarServer.Domain.Vehicles.Vehicle.CategoryId#IdentityId", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<Guid>("Value")
+                                .HasColumnType("uniqueidentifier");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Color", "RentCarServer.Domain.Vehicles.Vehicle.Color#Color", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "DailyPrice", "RentCarServer.Domain.Vehicles.Vehicle.DailyPrice#DailyPrice", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<decimal>("Value")
+                                .HasColumnType("money");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Description", "RentCarServer.Domain.Vehicles.Vehicle.Description#Description", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "EngineNumber", "RentCarServer.Domain.Vehicles.Vehicle.EngineNumber#EngineNumber", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "EnginePower", "RentCarServer.Domain.Vehicles.Vehicle.EnginePower#EnginePower", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<int>("Value")
+                                .HasColumnType("int");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "EngineVolume", "RentCarServer.Domain.Vehicles.Vehicle.EngineVolume#EngineVolume", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<decimal>("Value")
+                                .HasColumnType("decimal(18,2)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "FuelConsumption", "RentCarServer.Domain.Vehicles.Vehicle.FuelConsumption#FuelConsumption", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<decimal>("Value")
+                                .HasColumnType("decimal(18,2)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "FuelType", "RentCarServer.Domain.Vehicles.Vehicle.FuelType#FuelType", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "GeneralStatus", "RentCarServer.Domain.Vehicles.Vehicle.GeneralStatus#GeneralStatus", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "ImageUrl", "RentCarServer.Domain.Vehicles.Vehicle.ImageUrl#ImageUrl", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "InspectionDate", "RentCarServer.Domain.Vehicles.Vehicle.InspectionDate#InspectionDate", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<DateOnly>("Value")
+                                .HasColumnType("date");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "InsuranceEndDate", "RentCarServer.Domain.Vehicles.Vehicle.InsuranceEndDate#InsuranceEndDate", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<DateOnly>("Value")
+                                .HasColumnType("date");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "InsuranceType", "RentCarServer.Domain.Vehicles.Vehicle.InsuranceType#InsuranceType", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Kilometer", "RentCarServer.Domain.Vehicles.Vehicle.Kilometer#Kilometer", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<int>("Value")
+                                .HasColumnType("int");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "LastMaintanceDate", "RentCarServer.Domain.Vehicles.Vehicle.LastMaintanceDate#LastMaintanceDate", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<DateOnly>("Value")
+                                .HasColumnType("date");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "LastMaintanceKm", "RentCarServer.Domain.Vehicles.Vehicle.LastMaintanceKm#LastMaintanceKm", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<int>("Value")
+                                .HasColumnType("int");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Model", "RentCarServer.Domain.Vehicles.Vehicle.Model#Model", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "ModelYear", "RentCarServer.Domain.Vehicles.Vehicle.ModelYear#ModelYear", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<int>("Value")
+                                .HasColumnType("int");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "MonthlyDiscountRate", "RentCarServer.Domain.Vehicles.Vehicle.MonthlyDiscountRate#MonthlyDiscountRate", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<decimal>("Value")
+                                .HasColumnType("decimal(18,2)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "NextMaintanceKm", "RentCarServer.Domain.Vehicles.Vehicle.NextMaintanceKm#NextMaintanceKm", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<int>("Value")
+                                .HasColumnType("int");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Plate", "RentCarServer.Domain.Vehicles.Vehicle.Plate#Plate", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "SeatCount", "RentCarServer.Domain.Vehicles.Vehicle.SeatCount#SeatCount", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<int>("Value")
+                                .HasColumnType("int");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "TireStatus", "RentCarServer.Domain.Vehicles.Vehicle.TireStatus#TireStatus", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "TractionType", "RentCarServer.Domain.Vehicles.Vehicle.TractionType#TractionType", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Transmission", "RentCarServer.Domain.Vehicles.Vehicle.Transmission#Transmission", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "VinNumber", "RentCarServer.Domain.Vehicles.Vehicle.VinNumber#VinNumber", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "WeeklyDiscountRate", "RentCarServer.Domain.Vehicles.Vehicle.WeeklyDiscountRate#WeeklyDiscountRate", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<decimal>("Value")
+                                .HasColumnType("decimal(18,2)");
+                        });
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Vehicles", (string)null);
+                });
+
             modelBuilder.Entity("RentCarServer.Domain.ProtectionPackages.ProtectionPackage", b =>
                 {
                     b.OwnsMany("RentCarServer.Domain.ProtectionPackages.ValueObjects.ProtectionCoverage", "Coverages", b1 =>
@@ -549,6 +843,34 @@ namespace RentCarServer.Insfractructure.Migrations
                         });
 
                     b.Navigation("Permissions");
+                });
+
+            modelBuilder.Entity("RentCarServer.Domain.Vehicles.Vehicle", b =>
+                {
+                    b.OwnsMany("RentCarServer.Domain.Vehicles.ValueObjects.Feature", "Features", b1 =>
+                        {
+                            b1.Property<Guid>("VehicleId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+
+                            b1.HasKey("VehicleId", "Id");
+
+                            b1.ToTable("Feature");
+
+                            b1.WithOwner()
+                                .HasForeignKey("VehicleId");
+                        });
+
+                    b.Navigation("Features");
                 });
 #pragma warning restore 612, 618
         }

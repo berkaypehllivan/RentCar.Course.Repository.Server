@@ -1,0 +1,109 @@
+﻿using RentCarServer.Domain.Abstractions;
+using RentCarServer.Domain.Branches;
+using RentCarServer.Domain.Categories;
+using RentCarServer.Domain.Vehicles;
+
+namespace RentCarServer.Application.Vehicles;
+
+public sealed class VehicleDto : EntityDto
+{
+    public string Brand { get; set; } = default!;
+    public string Model { get; set; } = default!;
+    public int ModelYear { get; set; }
+    public string Color { get; set; } = default!;
+    public string Plate { get; set; } = default!;
+    public Guid CategoryId { get; set; }
+    public string CategoryName { get; set; } = default!;
+    public Guid BranchId { get; set; }
+    public string BranchName { get; set; } = default!;
+    public string VinNumber { get; set; } = default!;
+    public string EngineNumber { get; set; } = default!;
+    public string Description { get; set; } = default!;
+    public string ImageUrl { get; set; } = default!;
+    public string FuelType { get; set; } = default!;
+    public string Transmission { get; set; } = default!;
+    public decimal EngineVolume { get; set; }
+    public int EnginePower { get; set; }
+    public string TractionType { get; set; } = default!;
+    public decimal FuelConsumption { get; set; }
+    public int SeatCount { get; set; }
+    public int Kilometer { get; set; }
+    public decimal DailyPrice { get; set; }
+    public decimal WeeklyDiscountRate { get; set; }
+    public decimal MonthlyDiscountRate { get; set; }
+    public string InsuranceType { get; set; } = default!;
+    public DateOnly LastMaintanceDate { get; set; }
+    public int LastMaintanceKm { get; set; }
+    public int NextMaintanceKm { get; set; }
+    public DateOnly InspectionDate { get; set; }
+    public DateOnly InsuranceEndDate { get; set; }
+    public DateOnly? CascoEndDate { get; set; }
+    public string TireStatus { get; set; } = default!;
+    public string GeneralStatus { get; set; } = default!;
+    public List<string> Features { get; set; } = new();
+}
+
+public static class VehicleExtensions
+{
+    public static IQueryable<VehicleDto> MapTo(this
+    IQueryable<EntityWithAuditDto<Vehicle>> entities,
+    IQueryable<Branch> branches,
+    IQueryable<Category> categories)
+    {
+        var query = from e in entities
+
+                    join b in branches on e.Entity.BranchId.Value equals b.Id into branchGroup
+                    from branch in branchGroup.DefaultIfEmpty()
+
+                    join c in categories on e.Entity.CategoryId.Value equals c.Id into categoryGroup
+                    from category in categoryGroup.DefaultIfEmpty()
+
+                    select new VehicleDto
+                    {
+                        Id = e.Entity.Id,
+                        Brand = e.Entity.Brand.Value,
+                        Model = e.Entity.Model.Value,
+                        ModelYear = e.Entity.ModelYear.Value,
+                        Color = e.Entity.Color.Value,
+                        Plate = e.Entity.Plate.Value,
+                        CategoryId = e.Entity.CategoryId.Value,
+                        CategoryName = category != null ? category.Name.Value : string.Empty,
+                        BranchId = e.Entity.BranchId.Value,
+                        BranchName = branch != null ? branch.Name.Value : string.Empty,
+                        VinNumber = e.Entity.VinNumber.Value,
+                        EngineNumber = e.Entity.EngineNumber.Value,
+                        Description = e.Entity.Description.Value,
+                        ImageUrl = e.Entity.ImageUrl.Value,
+                        FuelType = e.Entity.FuelType.Value,
+                        Transmission = e.Entity.Transmission.Value,
+                        EngineVolume = e.Entity.EngineVolume.Value,
+                        EnginePower = e.Entity.EnginePower.Value,
+                        TractionType = e.Entity.TractionType.Value,
+                        FuelConsumption = e.Entity.FuelConsumption.Value,
+                        SeatCount = e.Entity.SeatCount.Value,
+                        Kilometer = e.Entity.Kilometer.Value,
+                        DailyPrice = e.Entity.DailyPrice.Value,
+                        WeeklyDiscountRate = e.Entity.WeeklyDiscountRate.Value,
+                        MonthlyDiscountRate = e.Entity.MonthlyDiscountRate.Value,
+                        InsuranceType = e.Entity.InsuranceType.Value,
+                        LastMaintanceDate = e.Entity.LastMaintanceDate.Value,
+                        LastMaintanceKm = e.Entity.LastMaintanceKm.Value,
+                        NextMaintanceKm = e.Entity.NextMaintanceKm.Value,
+                        InspectionDate = e.Entity.InspectionDate.Value,
+                        InsuranceEndDate = e.Entity.InsuranceEndDate.Value,
+                        CascoEndDate = e.Entity.CascoEndDate != null ? e.Entity.CascoEndDate!.Value : null,
+                        TireStatus = e.Entity.TireStatus.Value,
+                        GeneralStatus = e.Entity.GeneralStatus.Value,
+                        Features = e.Entity.Features.Select(f => f.Value).ToList(),
+                        IsActive = e.Entity.IsActive,
+                        CreatedAt = e.Entity.CreatedAt,
+                        CreatedBy = e.Entity.CreatedBy,
+                        CreatedFullName = e.CreatedUser.FullName.Value,
+                        UpdatedAt = e.Entity.UpdatedAt,
+                        UpdatedBy = e.Entity.UpdatedBy != null ? e.Entity.UpdatedBy!.Value : null,
+                        UpdatedFullName = e.UpdatedUser != null ? e.UpdatedUser.FullName.Value : null,
+                    };
+
+        return query;
+    }
+}

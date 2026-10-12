@@ -32,40 +32,26 @@ public sealed class LoginCommandHandler(
     public async Task<Result<LoginCommandResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
         var user = await userRepository.FirstOrDefaultAsync(p =>
-        p.Email.Value == request.EmailOrUserName
-        || p.UserName.Value == request.EmailOrUserName);
+            p.Email.Value == request.EmailOrUserName
+            || p.UserName.Value == request.EmailOrUserName, cancellationToken);
 
-        if (user is null)
-            return Result<LoginCommandResponse>.Failure("Kullanıcı adı veya şifre hatalı!");
-
-        var checkPassword = user.VerifyPasswordHash(request.Password);
-
-        if (!checkPassword)
-            return Result<LoginCommandResponse>.Failure("Kullanıcı adı veya şifre hatalı!");
+        if (user is null || !user.VerifyPasswordHash(request.Password))
+            return Result<LoginCommandResponse>.Failure(401, "Kullanıcı adı veya şifre hatalı!");
 
         if (!user.TFAStatus.Value)
         {
             var token = await jwtProvider.CreateTokenAsync(user, cancellationToken);
-            var res = new LoginCommandResponse() { Token = token };
-
-            return res;
-        }
-        else
-        {
-            user.CreateTFACode();
-
-            userRepository.Update(user);
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-
-            string to = user.Email.Value;
-            string subject = "Giriş onayı";
-            string body = $@"Uygulamaya girmek için aşağıdaki kodu kullanabilirsiniz. Kodun geçerlilik süresi 5 dakikadır. <p><h4>{user.TFAConfirmCode!.Value}<h4/><p/>";
-            await mailService.SendAsync(to, subject, body);
-
-            var res = new LoginCommandResponse() { TFACode = user.TFACode!.Value };
-            return res;
+            return new LoginCommandResponse { Token = token };
         }
 
+        user.CreateTFACode();
+        userRepository.Update(user);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
+        var body = $@"Uygulamaya girmek için aşağıdaki kodu kullanabilirsiniz. Kodun geçerlilik süresi 5 dakikadır.
+<p><h4>{user.TFAConfirmCode!.Value}</h4></p>";
+        await mailService.SendAsync(user.Email.Value, "Giriş onayı", body);
+
+        return new LoginCommandResponse { TFACode = user.TFACode!.Value };
     }
 }

@@ -70,9 +70,6 @@ builder.Services.AddHostedService<CheckLoginTokenBackgroundService>();
 
 var app = builder.Build();
 
-// --- 2. MIDDLEWARE PIPELINE (SIRALAMA KRİTİKTİR) ---
-
-// Hata yakalayıcı her zaman EN ÜSTTE olmalı (Tüm pipeline'ı izlemesi için)
 app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
@@ -83,33 +80,28 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// CORS, Auth ve RateLimit'ten önce gelmeli (Tarayıcı preflight istekleri için)
 app.UseCors(x => x
     .AllowAnyHeader()
     .AllowAnyOrigin()
     .AllowAnyMethod()
     .SetPreflightMaxAge(TimeSpan.FromMinutes(10)));
 
-// ÖNEMLİ: Geliştirme ortamında compression'ı kapatıyoruz ki Preview boş gelmesin.
 if (!app.Environment.IsDevelopment())
 {
     app.UseResponseCompression();
 }
+app.UseStaticFiles();
 
-// Rate Limiter, Auth'dan önce gelmeli.
 app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<CheckTokenMiddleware>();
 
-// --- 3. ENDPOINT TANIMLAMALARI ---
-
 app.MapControllers()
     .RequireRateLimiting("fixed")
     .RequireAuthorization();
-
-app.MapAuth(); // Auth modülündeki endpointler burada register edilir
+app.MapAuth();
 app.MapBranch();
 app.MapRole();
 app.MapPermission();
@@ -117,10 +109,11 @@ app.MapUser();
 app.MapCategory();
 app.MapProtectionPackage();
 app.MapExtra();
+app.MapVehicle();
+app.MapSeedData();
 
 app.MapGet("/", () => "Hello world").RequireAuthorization();
 
-//await app.CreateFirstUser();
 
 await app.CleanRemovedPermissionsFromRoleAsync();
 app.Run();

@@ -23,4 +23,8 @@
     <ProjectReference Include="..\RentCarServer.Insfractructure\RentCarServer.Insfractructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
 </Project>
