@@ -143,6 +143,110 @@ namespace RentCarServer.Insfractructure.Migrations
                     b.ToTable("Categories", (string)null);
                 });
 
+            modelBuilder.Entity("RentCarServer.Domain.Customers.Customer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Address", "RentCarServer.Domain.Customers.Customer.Address#Address", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "DateOfBirth", "RentCarServer.Domain.Customers.Customer.DateOfBirth#DateOfBirth", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<DateOnly>("Value")
+                                .HasColumnType("date");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "DriverLicenceIssueDate", "RentCarServer.Domain.Customers.Customer.DriverLicenceIssueDate#DriverLicenceIssueDate", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<DateOnly>("Value")
+                                .HasColumnType("date");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Email", "RentCarServer.Domain.Customers.Customer.Email#Email", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "FirstName", "RentCarServer.Domain.Customers.Customer.FirstName#FirstName", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "IdentityNumber", "RentCarServer.Domain.Customers.Customer.IdentityNumber#IdentityNumber", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "LastName", "RentCarServer.Domain.Customers.Customer.LastName#LastName", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "PhoneNumber", "RentCarServer.Domain.Customers.Customer.PhoneNumber#PhoneNumber", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Customers", (string)null);
+                });
+
             modelBuilder.Entity("RentCarServer.Domain.Extras.Extra", b =>
                 {
                     b.Property<Guid>("Id")
