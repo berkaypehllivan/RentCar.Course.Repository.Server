@@ -25,7 +25,6 @@ internal sealed class ApplicationDbContext : DbContext, IUnitOfWork
         configurationBuilder.Properties<IdentityId>().HaveConversion<IdentityIdValueConverter>();
         configurationBuilder.Properties<decimal>().HaveColumnType("money");
         configurationBuilder.Properties<string>().HaveColumnType("nvarchar(MAX)");
-        configurationBuilder.Properties<TimeOnly>().HaveColumnType("time(7)");
         base.ConfigureConventions(configurationBuilder);
     }
 
