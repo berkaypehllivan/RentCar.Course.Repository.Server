@@ -7,6 +7,7 @@ public sealed class CustomerDto : EntityDto
 {
     public string FirstName { get; set; } = default!;
     public string LastName { get; set; } = default!;
+    public string FullName { get; set; } = default!;
     public string IdentityNumber { get; set; } = default!;
     public DateOnly DateOfBirth { get; set; }
     public string Email { get; set; } = default!;
@@ -24,6 +25,7 @@ public static class CustomerExtensions
             Id = s.Entity.Id,
             FirstName = s.Entity.FirstName.Value,
             LastName = s.Entity.LastName.Value,
+            FullName = s.Entity.FirstName.Value + " " + s.Entity.LastName.Value,
             IdentityNumber = s.Entity.IdentityNumber.Value,
             DateOfBirth = s.Entity.DateOfBirth.Value,
             Email = s.Entity.Email.Value,

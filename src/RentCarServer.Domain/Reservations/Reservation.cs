@@ -1,0 +1,189 @@
+﻿using RentCarServer.Domain.Abstractions;
+using RentCarServer.Domain.Reservations.ValueObjects;
+using RentCarServer.Domain.Shared;
+
+namespace RentCarServer.Domain.Reservations;
+
+public sealed class Reservation : Entity, IAggregate
+{
+    private readonly List<ReservationExtra> _reservationExtras = new();
+    private readonly List<ReservationHistory> _histories = new();
+
+    private Reservation()
+    {
+
+    }
+
+    private Reservation(IdentityId customerId,
+        IdentityId pickUpLocationId,
+        PickUpDate pickUpDate,
+        PickUpTime pickUpTime,
+        DeliveryDate deliveryDate,
+        DeliveryTime deliveryTime,
+        IdentityId vehicleId,
+        Price vehicleDailyPrice,
+        IdentityId? protectionPackageId,
+        Price? protectionPackagePrice,
+        IEnumerable<ReservationExtra> reservationExtras,
+        Note note,
+        PaymentInformation paymentInformation,
+        Status status,
+        Total total,
+        TotalDay totalDay,
+        ReservationHistory history)
+    {
+        SetCustomerId(customerId);
+        SetPickUpLocationId(pickUpLocationId);
+        SetPickUpDate(pickUpDate);
+        SetPickUpTime(pickUpTime);
+        SetDeliveryDate(deliveryDate);
+        SetDeliveryTime(deliveryTime);
+        SetVehicleId(vehicleId);
+        SetVehicleDailyPrice(vehicleDailyPrice);
+        if (protectionPackageId is not null) SetProtectionPackageId(protectionPackageId);
+        if (protectionPackagePrice is not null) SetProtectionPackagePrice(protectionPackagePrice);
+        SetNote(note);
+        SetPaymentInformation(paymentInformation);
+        SetStatus(status);
+        SetTotalDay(totalDay);
+        SetReservationExtras(reservationExtras);
+        SetTotal(total);
+        SetPickUpDateTime();
+        SetDeliveryDateTime();
+        SetReservationNumber();
+        SetHistory(history);
+    }
+
+    public IdentityId CustomerId { get; private set; } = default!;
+    public IdentityId PickUpLocationId { get; private set; } = default!;
+    public PickUpDate PickUpDate { get; private set; } = default!;
+    public PickUpTime PickUpTime { get; private set; } = default!;
+    public PickUpDateTime PickUpDateTime { get; private set; } = default!;
+    public DeliveryDate DeliveryDate { get; private set; } = default!;
+    public DeliveryTime DeliveryTime { get; private set; } = default!;
+    public DeliveryDateTime DeliveryDateTime { get; private set; } = default!;
+    public TotalDay TotalDay { get; private set; } = default!;
+    public IdentityId VehicleId { get; private set; } = default!;
+    public Price VehicleDailyPrice { get; private set; } = default!;
+    public IReadOnlyCollection<ReservationExtra> ReservationExtras => _reservationExtras;
+    public IdentityId? ProtectionPackageId { get; private set; }
+    public Price? ProtectionPackagePrice { get; private set; }
+    public Note Note { get; private set; } = default!;
+    public PaymentInformation PaymentInformation { get; private set; } = default!;
+    public Status Status { get; private set; } = default!;
+    public Total Total { get; private set; } = default!;
+    public ReservationNumber ReservationNumber { get; private set; } = default!;
+    public IReadOnlyCollection<ReservationHistory> ReservationHistories => _histories;
+
+    #region Behaviors
+
+    public static Reservation Create(
+        IdentityId customerId,
+        IdentityId pickUpLocationId,
+        PickUpDate pickUpDate,
+        PickUpTime pickUpTime,
+        DeliveryDate deliveryDate,
+        DeliveryTime deliveryTime,
+        IdentityId vehicleId,
+        Price vehicleDailyPrice,
+        IdentityId? protectionPackageId,
+        Price? protectionPackagePrice,
+        IEnumerable<ReservationExtra> reservationExtras,
+        Note note,
+        PaymentInformation paymentInformation,
+        Status status,
+        Total total,
+        TotalDay totalDay,
+        ReservationHistory history)
+    {
+        var reservation = new Reservation(
+            customerId,
+            pickUpLocationId,
+            pickUpDate,
+            pickUpTime,
+            deliveryDate,
+            deliveryTime,
+            vehicleId,
+            vehicleDailyPrice,
+            protectionPackageId,
+            protectionPackagePrice,
+            reservationExtras,
+            note,
+            paymentInformation,
+            status,
+            total,
+            totalDay,
+            history);
+
+        return reservation;
+    }
+
+    public void SetCustomerId(IdentityId customerId) => CustomerId = customerId;
+    public void SetPickUpLocationId(IdentityId pickUpLocationId) => PickUpLocationId = pickUpLocationId;
+    public void SetPickUpDate(PickUpDate pickUpDate) => PickUpDate = pickUpDate;
+    public void SetPickUpTime(PickUpTime pickUpTime) => PickUpTime = pickUpTime;
+    public void SetDeliveryDate(DeliveryDate deliveryDate) => DeliveryDate = deliveryDate;
+    public void SetDeliveryTime(DeliveryTime deliveryTime) => DeliveryTime = deliveryTime;
+    public void SetTotalDay(TotalDay totalDay)
+    {
+        var pickUpDateTime = PickUpDate.Value.ToDateTime(PickUpTime.Value);
+        var deliveryDateTime = DeliveryDate.Value.ToDateTime(DeliveryTime.Value);
+        var totalDays = (deliveryDateTime - pickUpDateTime).Days;
+
+        var sameDayExtraAllowed = DeliveryTime.Value <= PickUpTime.Value.Add(TimeSpan.FromHours(2));
+
+        if (totalDays == 0 || (totalDays == 1 && sameDayExtraAllowed))
+        {
+
+            TotalDay = new TotalDay(1);
+        }
+        else if (sameDayExtraAllowed)
+        {
+            TotalDay = new TotalDay(totalDays);
+        }
+        else
+        {
+            TotalDay = totalDay;
+        }
+    }
+    public void SetVehicleId(IdentityId vehicleId) => VehicleId = vehicleId;
+    public void SetVehicleDailyPrice(Price vehicleDailyPrice) => VehicleDailyPrice = vehicleDailyPrice;
+    public void SetProtectionPackageId(IdentityId protectionPackageId) => ProtectionPackageId = protectionPackageId;
+    public void SetProtectionPackagePrice(Price protectionPackagePrice) => ProtectionPackagePrice = protectionPackagePrice;
+    public void SetReservationExtras(IEnumerable<ReservationExtra> reservationExtras)
+    {
+        _reservationExtras.Clear();
+        _reservationExtras.AddRange(reservationExtras);
+    }
+    public void SetNote(Note note) => Note = note;
+    public void SetPaymentInformation(PaymentInformation paymentInformation) => PaymentInformation = paymentInformation;
+    public void SetStatus(Status status) => Status = status;
+    public void SetTotal(Total total) => Total = total;
+    public void SetPickUpDateTime()
+    {
+        var date = new DateTime(PickUpDate.Value, PickUpTime.Value);
+        PickUpDateTime = new(new DateTimeOffset(date));
+    }
+    public void SetDeliveryDateTime()
+    {
+        var date = new DateTime(DeliveryDate.Value, DeliveryTime.Value);
+        DeliveryDateTime = new(new DateTimeOffset(date));
+    }
+
+    private void SetReservationNumber()
+    {
+        Random random = new();
+        var randomNum = string.Concat(Enumerable.Range(0, 8).Select(_ => random.Next(10)));
+        var date = DateTime.Now;
+        string number = "RSV-" + date.Year + "-" + randomNum;
+        ReservationNumber = new(number);
+    }
+
+    public void SetHistory(ReservationHistory history)
+    {
+        _histories.Add(history);
+    }
+
+    #endregion
+
+}
