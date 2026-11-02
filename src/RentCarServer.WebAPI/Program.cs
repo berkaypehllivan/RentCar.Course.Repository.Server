@@ -113,6 +113,7 @@ app.MapVehicle();
 app.MapSeedData();
 app.MapCustomer();
 app.MapReservation();
+app.MapReservationForm();
 
 app.MapGet("/", () => "Hello world").RequireAuthorization();
 

@@ -1087,6 +1087,268 @@ namespace RentCarServer.Insfractructure.Migrations
 
             modelBuilder.Entity("RentCarServer.Domain.Reservations.Reservation", b =>
                 {
+                    b.OwnsOne("RentCarServer.Domain.Reservations.Forms.Form", "DeliveryForm", b1 =>
+                        {
+                            b1.Property<Guid>("ReservationId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.HasKey("ReservationId");
+
+                            b1.ToTable("Reservations");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ReservationId");
+
+                            b1.OwnsMany("RentCarServer.Domain.Reservations.Forms.ValueObjects.Damage", "Damages", b2 =>
+                                {
+                                    b2.Property<Guid>("FormReservationId")
+                                        .HasColumnType("uniqueidentifier");
+
+                                    b2.Property<int>("Id")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("int");
+
+                                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b2.Property<int>("Id"));
+
+                                    b2.Property<string>("Description")
+                                        .IsRequired()
+                                        .HasColumnType("nvarchar(MAX)");
+
+                                    b2.Property<string>("Level")
+                                        .IsRequired()
+                                        .HasColumnType("nvarchar(MAX)");
+
+                                    b2.HasKey("FormReservationId", "Id");
+
+                                    b2.ToTable("DeliveryForm_Damages", (string)null);
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("FormReservationId");
+                                });
+
+                            b1.OwnsMany("RentCarServer.Domain.Vehicles.ValueObjects.ImageUrl", "ImageUrls", b2 =>
+                                {
+                                    b2.Property<Guid>("FormReservationId")
+                                        .HasColumnType("uniqueidentifier");
+
+                                    b2.Property<int>("Id")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("int");
+
+                                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b2.Property<int>("Id"));
+
+                                    b2.Property<string>("Value")
+                                        .IsRequired()
+                                        .HasColumnType("nvarchar(MAX)");
+
+                                    b2.HasKey("FormReservationId", "Id");
+
+                                    b2.ToTable("DeliveryForm_ImageUrls", (string)null);
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("FormReservationId");
+                                });
+
+                            b1.OwnsOne("RentCarServer.Domain.Vehicles.ValueObjects.Kilometer", "Kilometer", b2 =>
+                                {
+                                    b2.Property<Guid>("FormReservationId")
+                                        .HasColumnType("uniqueidentifier");
+
+                                    b2.Property<int>("Value")
+                                        .HasColumnType("int");
+
+                                    b2.HasKey("FormReservationId");
+
+                                    b2.ToTable("Reservations");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("FormReservationId");
+                                });
+
+                            b1.OwnsOne("RentCarServer.Domain.Reservations.ValueObjects.Note", "Note", b2 =>
+                                {
+                                    b2.Property<Guid>("FormReservationId")
+                                        .HasColumnType("uniqueidentifier");
+
+                                    b2.Property<string>("Value")
+                                        .IsRequired()
+                                        .HasColumnType("nvarchar(MAX)");
+
+                                    b2.HasKey("FormReservationId");
+
+                                    b2.ToTable("DeliveryForm_Note", (string)null);
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("FormReservationId");
+                                });
+
+                            b1.OwnsMany("RentCarServer.Domain.Reservations.Forms.ValueObjects.Supplies", "Supplies", b2 =>
+                                {
+                                    b2.Property<Guid>("FormReservationId")
+                                        .HasColumnType("uniqueidentifier");
+
+                                    b2.Property<int>("Id")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("int");
+
+                                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b2.Property<int>("Id"));
+
+                                    b2.Property<string>("Value")
+                                        .IsRequired()
+                                        .HasColumnType("nvarchar(MAX)");
+
+                                    b2.HasKey("FormReservationId", "Id");
+
+                                    b2.ToTable("DeliveryForm_Supplies", (string)null);
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("FormReservationId");
+                                });
+
+                            b1.Navigation("Damages");
+
+                            b1.Navigation("ImageUrls");
+
+                            b1.Navigation("Kilometer")
+                                .IsRequired();
+
+                            b1.Navigation("Note")
+                                .IsRequired();
+
+                            b1.Navigation("Supplies");
+                        });
+
+                    b.OwnsOne("RentCarServer.Domain.Reservations.Forms.Form", "PickUpForm", b1 =>
+                        {
+                            b1.Property<Guid>("ReservationId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.HasKey("ReservationId");
+
+                            b1.ToTable("Reservations");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ReservationId");
+
+                            b1.OwnsMany("RentCarServer.Domain.Reservations.Forms.ValueObjects.Damage", "Damages", b2 =>
+                                {
+                                    b2.Property<Guid>("FormReservationId")
+                                        .HasColumnType("uniqueidentifier");
+
+                                    b2.Property<int>("Id")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("int");
+
+                                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b2.Property<int>("Id"));
+
+                                    b2.Property<string>("Description")
+                                        .IsRequired()
+                                        .HasColumnType("nvarchar(MAX)");
+
+                                    b2.Property<string>("Level")
+                                        .IsRequired()
+                                        .HasColumnType("nvarchar(MAX)");
+
+                                    b2.HasKey("FormReservationId", "Id");
+
+                                    b2.ToTable("PickUpForm_Damages", (string)null);
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("FormReservationId");
+                                });
+
+                            b1.OwnsMany("RentCarServer.Domain.Vehicles.ValueObjects.ImageUrl", "ImageUrls", b2 =>
+                                {
+                                    b2.Property<Guid>("FormReservationId")
+                                        .HasColumnType("uniqueidentifier");
+
+                                    b2.Property<int>("Id")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("int");
+
+                                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b2.Property<int>("Id"));
+
+                                    b2.Property<string>("Value")
+                                        .IsRequired()
+                                        .HasColumnType("nvarchar(MAX)");
+
+                                    b2.HasKey("FormReservationId", "Id");
+
+                                    b2.ToTable("PickUpForm_ImageUrls", (string)null);
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("FormReservationId");
+                                });
+
+                            b1.OwnsOne("RentCarServer.Domain.Vehicles.ValueObjects.Kilometer", "Kilometer", b2 =>
+                                {
+                                    b2.Property<Guid>("FormReservationId")
+                                        .HasColumnType("uniqueidentifier");
+
+                                    b2.Property<int>("Value")
+                                        .HasColumnType("int");
+
+                                    b2.HasKey("FormReservationId");
+
+                                    b2.ToTable("Reservations");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("FormReservationId");
+                                });
+
+                            b1.OwnsOne("RentCarServer.Domain.Reservations.ValueObjects.Note", "Note", b2 =>
+                                {
+                                    b2.Property<Guid>("FormReservationId")
+                                        .HasColumnType("uniqueidentifier");
+
+                                    b2.Property<string>("Value")
+                                        .IsRequired()
+                                        .HasColumnType("nvarchar(MAX)");
+
+                                    b2.HasKey("FormReservationId");
+
+                                    b2.ToTable("PickUpForm_Note", (string)null);
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("FormReservationId");
+                                });
+
+                            b1.OwnsMany("RentCarServer.Domain.Reservations.Forms.ValueObjects.Supplies", "Supplies", b2 =>
+                                {
+                                    b2.Property<Guid>("FormReservationId")
+                                        .HasColumnType("uniqueidentifier");
+
+                                    b2.Property<int>("Id")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("int");
+
+                                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b2.Property<int>("Id"));
+
+                                    b2.Property<string>("Value")
+                                        .IsRequired()
+                                        .HasColumnType("nvarchar(MAX)");
+
+                                    b2.HasKey("FormReservationId", "Id");
+
+                                    b2.ToTable("PickUpForm_Supplies", (string)null);
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("FormReservationId");
+                                });
+
+                            b1.Navigation("Damages");
+
+                            b1.Navigation("ImageUrls");
+
+                            b1.Navigation("Kilometer")
+                                .IsRequired();
+
+                            b1.Navigation("Note")
+                                .IsRequired();
+
+                            b1.Navigation("Supplies");
+                        });
+
                     b.OwnsMany("RentCarServer.Domain.Reservations.ReservationHistory", "ReservationHistories", b1 =>
                         {
                             b1.Property<Guid>("ReservationId")
@@ -1141,6 +1403,12 @@ namespace RentCarServer.Insfractructure.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("ReservationId");
                         });
+
+                    b.Navigation("DeliveryForm")
+                        .IsRequired();
+
+                    b.Navigation("PickUpForm")
+                        .IsRequired();
 
                     b.Navigation("ReservationExtras");
 

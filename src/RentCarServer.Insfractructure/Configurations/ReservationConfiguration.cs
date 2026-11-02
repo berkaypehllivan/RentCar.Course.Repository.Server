@@ -27,6 +27,50 @@ internal class ReservationConfiguration : IEntityTypeConfiguration<Reservation>
         builder.ComplexProperty(p => p.PickUpDateTime);
         builder.ComplexProperty(p => p.DeliveryDateTime);
         builder.OwnsMany(p => p.ReservationHistories);
+        builder.OwnsOne(p => p.PickUpForm, modelBuilder =>
+        {
+            modelBuilder.OwnsOne(i => i.Kilometer);
+            modelBuilder.OwnsMany(i => i.ImageUrls, x =>
+            {
+                x.ToTable("PickUpForm_ImageUrls");
+            });
 
+            modelBuilder.OwnsMany(i => i.Supplies, x =>
+            {
+                x.ToTable("PickUpForm_Supplies");
+            });
+            modelBuilder.OwnsMany(i => i.Damages, x =>
+            {
+                x.ToTable("PickUpForm_Damages");
+            });
+
+            modelBuilder.OwnsOne(i => i.Note, x =>
+            {
+                x.ToTable("PickUpForm_Note");
+            });
+        });
+        builder.OwnsOne(p => p.DeliveryForm, modelBuilder =>
+        {
+            modelBuilder.OwnsOne(i => i.Kilometer);
+            modelBuilder.OwnsMany(i => i.ImageUrls, x =>
+            {
+                x.ToTable("DeliveryForm_ImageUrls");
+            });
+
+            modelBuilder.OwnsMany(i => i.Supplies, x =>
+            {
+                x.ToTable("DeliveryForm_Supplies");
+            });
+
+            modelBuilder.OwnsMany(i => i.Damages, x =>
+            {
+                x.ToTable("DeliveryForm_Damages");
+            });
+
+            modelBuilder.OwnsOne(i => i.Note, x =>
+            {
+                x.ToTable("DeliveryForm_Note");
+            });
+        });
     }
 }

@@ -1,4 +1,5 @@
 ﻿using RentCarServer.Domain.Abstractions;
+using RentCarServer.Domain.Reservations.Forms;
 using RentCarServer.Domain.Reservations.ValueObjects;
 using RentCarServer.Domain.Shared;
 
@@ -30,7 +31,9 @@ public sealed class Reservation : Entity, IAggregate
         Status status,
         Total total,
         TotalDay totalDay,
-        ReservationHistory history)
+        ReservationHistory history,
+        Form pickUpForm,
+        Form deliveryForm)
     {
         SetCustomerId(customerId);
         SetPickUpLocationId(pickUpLocationId);
@@ -44,7 +47,7 @@ public sealed class Reservation : Entity, IAggregate
         if (protectionPackagePrice is not null) SetProtectionPackagePrice(protectionPackagePrice);
         SetNote(note);
         SetPaymentInformation(paymentInformation);
-        SetStatus(status);
+        SetReservationStatus(status);
         SetTotalDay(totalDay);
         SetReservationExtras(reservationExtras);
         SetTotal(total);
@@ -52,6 +55,8 @@ public sealed class Reservation : Entity, IAggregate
         SetDeliveryDateTime();
         SetReservationNumber();
         SetHistory(history);
+        SetPickUpForm(pickUpForm);
+        SetDeliveryForm(deliveryForm);
     }
 
     public IdentityId CustomerId { get; private set; } = default!;
@@ -74,6 +79,8 @@ public sealed class Reservation : Entity, IAggregate
     public Total Total { get; private set; } = default!;
     public ReservationNumber ReservationNumber { get; private set; } = default!;
     public IReadOnlyCollection<ReservationHistory> ReservationHistories => _histories;
+    public Form PickUpForm { get; private set; } = default!;
+    public Form DeliveryForm { get; private set; } = default!;
 
     #region Behaviors
 
@@ -94,7 +101,9 @@ public sealed class Reservation : Entity, IAggregate
         Status status,
         Total total,
         TotalDay totalDay,
-        ReservationHistory history)
+        ReservationHistory history,
+        Form pickUpForm,
+        Form deliveryForm)
     {
         var reservation = new Reservation(
             customerId,
@@ -113,7 +122,9 @@ public sealed class Reservation : Entity, IAggregate
             status,
             total,
             totalDay,
-            history);
+            history,
+            pickUpForm,
+            deliveryForm);
 
         return reservation;
     }
@@ -157,7 +168,7 @@ public sealed class Reservation : Entity, IAggregate
     }
     public void SetNote(Note note) => Note = note;
     public void SetPaymentInformation(PaymentInformation paymentInformation) => PaymentInformation = paymentInformation;
-    public void SetStatus(Status status) => Status = status;
+    public void SetReservationStatus(Status status) => Status = status;
     public void SetTotal(Total total) => Total = total;
     public void SetPickUpDateTime()
     {
@@ -184,6 +195,15 @@ public sealed class Reservation : Entity, IAggregate
         _histories.Add(history);
     }
 
+    public void SetPickUpForm(Form pickUpForm)
+    {
+        PickUpForm = pickUpForm;
+    }
+
+    public void SetDeliveryForm(Form deliveryForm)
+    {
+        DeliveryForm = deliveryForm;
+    }
     #endregion
 
 }
