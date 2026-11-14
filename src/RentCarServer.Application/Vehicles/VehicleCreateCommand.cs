@@ -3,6 +3,7 @@ using GenericFileService.Files;
 using GenericRepository;
 using Microsoft.AspNetCore.Http;
 using RentCarServer.Application.Behaviors;
+using RentCarServer.Application.Services;
 using RentCarServer.Domain.Abstractions;
 using RentCarServer.Domain.Shared;
 using RentCarServer.Domain.Vehicles;
@@ -63,7 +64,7 @@ public sealed class VehicleCreateCommandValidator : AbstractValidator<VehicleCre
     }
 }
 
-internal sealed class VehicleCreateCommandHandler(IVehicleRepository repository, IUnitOfWork unitOfWork) : IRequestHandler<VehicleCreateCommand, Result<string>>
+internal sealed class VehicleCreateCommandHandler(IVehicleRepository repository, IUnitOfWork unitOfWork, IClaimContext claimContext) : IRequestHandler<VehicleCreateCommand, Result<string>>
 {
     public async Task<Result<string>> Handle(VehicleCreateCommand request, CancellationToken cancellationToken)
     {
@@ -78,7 +79,9 @@ internal sealed class VehicleCreateCommandHandler(IVehicleRepository repository,
         Color color = new(request.Color);
         Plate plate = new(request.Plate);
         IdentityId categoryId = new(request.CategoryId);
-        IdentityId branchId = new(request.BranchId);
+        IdentityId branchId = claimContext.IsSysAdmin()
+            ? new(request.BranchId)
+            : new(claimContext.GetBranchId());
         VinNumber vinNumber = new(request.VinNumber);
         EngineNumber engineNumber = new(request.EngineNumber);
         Description description = new(request.Description);

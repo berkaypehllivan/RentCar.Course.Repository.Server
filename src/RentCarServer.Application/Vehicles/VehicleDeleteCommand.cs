@@ -1,5 +1,6 @@
 ﻿using GenericRepository;
 using RentCarServer.Application.Behaviors;
+using RentCarServer.Application.Services;
 using RentCarServer.Domain.Vehicles;
 using TS.MediatR;
 using TS.Result;
@@ -11,13 +12,17 @@ public sealed record VehicleDeleteCommand(Guid Id) : IRequest<Result<string>>;
 
 internal sealed class VehicleDeleteCommandHandler(
     IVehicleRepository vehicleRepository,
-    IUnitOfWork unitOfWork) : IRequestHandler<VehicleDeleteCommand, Result<string>>
+    IUnitOfWork unitOfWork,
+    IClaimContext claimContext) : IRequestHandler<VehicleDeleteCommand, Result<string>>
 {
     public async Task<Result<string>> Handle(VehicleDeleteCommand request, CancellationToken cancellationToken)
     {
         Vehicle? vehicle = await vehicleRepository.FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
         if (vehicle is null)
-            return Result<string>.Failure("Araç bulunamadı!");
+            return Result<string>.Failure("Araç bulunamadı!!");
+
+        if (!claimContext.CanAccessBranch(vehicle.BranchId.Value))
+            return Result<string>.Failure("Araç bulunamadı!!");
 
         vehicle.Delete();
         vehicleRepository.Update(vehicle);

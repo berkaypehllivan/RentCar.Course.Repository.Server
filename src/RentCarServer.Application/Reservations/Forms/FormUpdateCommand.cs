@@ -37,7 +37,7 @@ internal class FormUpdateCommandHander(
         var vehicle = await vehicleRepository.FirstOrDefaultAsync(i => i.Id == reservation.VehicleId, cancellationToken);
 
         if (vehicle is null)
-            return Result<string>.Failure("Araç bulunamadı");
+            return Result<string>.Failure("Araç bulunamadı!");
 
         if (request.Kilometer < vehicle.Kilometer.Value)
             return Result<string>.Failure($"Kilometre aracın mevcut kilometresinden ({vehicle.Kilometer.Value}) küçük olamaz");

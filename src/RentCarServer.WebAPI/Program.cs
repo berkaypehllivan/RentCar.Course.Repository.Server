@@ -110,10 +110,12 @@ app.MapCategory();
 app.MapProtectionPackage();
 app.MapExtra();
 app.MapVehicle();
-app.MapSeedData();
 app.MapCustomer();
 app.MapReservation();
 app.MapReservationForm();
+app.MapDashboard();
+
+app.MapSeedData();
 
 app.MapGet("/", () => "Hello world").RequireAuthorization();
 

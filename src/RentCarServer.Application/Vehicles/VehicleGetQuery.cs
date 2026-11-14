@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RentCarServer.Application.Behaviors;
+using RentCarServer.Application.Services;
 using RentCarServer.Domain.Branchs;
 using RentCarServer.Domain.Categories;
 using RentCarServer.Domain.Vehicles;
@@ -14,7 +15,8 @@ public sealed record VehicleGetQuery(Guid Id) : IRequest<Result<VehicleDto>>;
 internal sealed class VehicleGetQueryHandler(
     IVehicleRepository vehicleRepository,
     IBranchRepository branchRepository,
-    ICategoryRepository categoryRepository
+    ICategoryRepository categoryRepository,
+    IClaimContext claimContext
     )
     : IRequestHandler<VehicleGetQuery, Result<VehicleDto>>
 {
@@ -22,12 +24,13 @@ internal sealed class VehicleGetQueryHandler(
     {
         var res = await vehicleRepository
             .GetAllWithAudit()
+            .ForCurrentBranch(claimContext)
             .MapTo(branchRepository.GetAll(), categoryRepository.GetAll())
             .Where(p => p.Id == request.Id)
             .FirstOrDefaultAsync(cancellationToken);
 
         if (res is null)
-            return Result<VehicleDto>.Failure("Araç bulunamadı");
+            return Result<VehicleDto>.Failure("Araç bulunamadı!");
 
         return res;
 

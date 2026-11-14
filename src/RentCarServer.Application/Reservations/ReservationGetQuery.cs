@@ -12,7 +12,7 @@ using TS.Result;
 
 namespace RentCarServer.Application.Reservations;
 
-[Permission("reservation/view")]
+[Permission("reservation:view")]
 
 public sealed record ReservationGetQuery(Guid Id) : IRequest<Result<ReservationDto>>;
 

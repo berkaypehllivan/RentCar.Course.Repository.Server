@@ -77,6 +77,10 @@ public class MainODataController : ODataController
     public IEnumerable<int> VehicleYears(ISender sender, CancellationToken cancellationToken = default)
         => sender.Send(new VehicleGetYearsQuery(), cancellationToken).Result;
 
+    [HttpGet("vehicles/brands")]
+    public IEnumerable<string> VehicleBrands(ISender sender, CancellationToken cancellationToken = default)
+        => sender.Send(new VehicleGetBrandsQuery(), cancellationToken).Result;
+
     [HttpGet("customers")]
     public IQueryable<CustomerDto> Customers(ISender sender, CancellationToken cancellationToken = default)
         => sender.Send(new CustomerGetAllQuery(), cancellationToken).Result;

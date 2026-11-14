@@ -24,7 +24,7 @@ public sealed record CreditCardInformation(
     string Expiry,
     string CCV);
 
-[Permission("reservation/create")]
+[Permission("reservation:create")]
 public sealed record ReservationCreateCommand(
     Guid CustomerId,
     Guid? PickUpLocationId,

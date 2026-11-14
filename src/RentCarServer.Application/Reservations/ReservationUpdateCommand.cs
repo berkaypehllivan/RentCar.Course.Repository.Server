@@ -15,7 +15,7 @@ using TS.Result;
 
 namespace RentCarServer.Application.Reservations;
 
-[Permission("reservation/edit")]
+[Permission("reservation:edit")]
 public sealed record ReservationUpdateCommand(
     Guid Id,
     Guid CustomerId,

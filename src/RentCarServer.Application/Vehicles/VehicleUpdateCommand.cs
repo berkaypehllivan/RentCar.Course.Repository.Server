@@ -4,6 +4,7 @@ using GenericRepository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RentCarServer.Application.Behaviors;
+using RentCarServer.Application.Services;
 using RentCarServer.Domain.Abstractions;
 using RentCarServer.Domain.Shared;
 using RentCarServer.Domain.Vehicles;
@@ -13,7 +14,7 @@ using TS.Result;
 
 namespace RentCarServer.Application.Vehicles;
 
-[Permission("vehicle:update")]
+[Permission("vehicle:edit")]
 public sealed record VehicleUpdateCommand(
     Guid Id,
     string Brand,
@@ -70,14 +71,18 @@ public sealed class VehicleUpdateCommandValidator : AbstractValidator<VehicleUpd
 
 internal sealed class VehicleUpdateCommandHandler(
     IVehicleRepository repository,
-    IUnitOfWork unitOfWork) : IRequestHandler<VehicleUpdateCommand, Result<string>>
+    IUnitOfWork unitOfWork,
+    IClaimContext claimContext) : IRequestHandler<VehicleUpdateCommand, Result<string>>
 {
     public async Task<Result<string>> Handle(VehicleUpdateCommand request, CancellationToken cancellationToken)
     {
         Vehicle? vehicle = await repository.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
         if (vehicle is null)
-            return Result<string>.Failure("Araç bulunamadı");
+            return Result<string>.Failure("Araç bulunamadı!");
+
+        if (!claimContext.CanAccessBranch(vehicle.BranchId.Value))
+            return Result<string>.Failure("Araç bulunamadı!");
 
         if (!string.Equals(vehicle.Plate.Value, request.Plate, StringComparison.OrdinalIgnoreCase))
         {
@@ -164,6 +169,6 @@ internal sealed class VehicleUpdateCommandHandler(
         repository.Update(vehicle);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return "Araç başarıyla güncellendi";
+        return "Araç bilgileri başarıyla güncellendi";
     }
 }
