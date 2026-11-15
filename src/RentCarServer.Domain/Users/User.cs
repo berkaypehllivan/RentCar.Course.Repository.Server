@@ -39,7 +39,6 @@ public sealed class User : Entity
     public IdentityId BranchId { get; private set; } = default!;
     public IdentityId RoleId { get; private set; } = default!;
 
-
     #region Behaviors
 
     public bool VerifyPasswordHash(string password)

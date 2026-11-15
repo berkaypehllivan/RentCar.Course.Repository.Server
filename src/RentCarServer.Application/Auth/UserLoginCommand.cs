@@ -7,41 +7,41 @@ using TS.Result;
 
 namespace RentCarServer.Application.Auth;
 
-public sealed record LoginCommand(
+public sealed record UserLoginCommand(
     string EmailOrUserName,
     string Password
-    ) : IRequest<Result<LoginCommandResponse>>;
+    ) : IRequest<Result<UserLoginCommandResponse>>;
 
-public sealed record LoginCommandResponse
+public sealed record UserLoginCommandResponse
 {
     public string? Token { get; set; }
     public string? TFACode { get; set; }
 }
-public sealed class LoginCommandValidator : AbstractValidator<LoginCommand>
+public sealed class UserLoginCommandValidator : AbstractValidator<UserLoginCommand>
 {
-    public LoginCommandValidator()
+    public UserLoginCommandValidator()
     {
         RuleFor(p => p.EmailOrUserName).NotEmpty().WithMessage("Geçerli bir kullanıcı adı veya email adresi giriniz!");
         RuleFor(p => p.Password).NotEmpty().WithMessage("Geçerli bir şifre giriniz!");
     }
 }
 
-public sealed class LoginCommandHandler(
-    IUserRepository userRepository, IJwtProvider jwtProvider, IMailService mailService, IUnitOfWork unitOfWork) : IRequestHandler<LoginCommand, Result<LoginCommandResponse>>
+public sealed class UserLoginCommandHandler(
+    IUserRepository userRepository, IJwtProvider jwtProvider, IMailService mailService, IUnitOfWork unitOfWork) : IRequestHandler<UserLoginCommand, Result<UserLoginCommandResponse>>
 {
-    public async Task<Result<LoginCommandResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
+    public async Task<Result<UserLoginCommandResponse>> Handle(UserLoginCommand request, CancellationToken cancellationToken)
     {
         var user = await userRepository.FirstOrDefaultAsync(p =>
             p.Email.Value == request.EmailOrUserName
             || p.UserName.Value == request.EmailOrUserName, cancellationToken);
 
         if (user is null || !user.VerifyPasswordHash(request.Password))
-            return Result<LoginCommandResponse>.Failure(401, "Kullanıcı adı veya şifre hatalı!");
+            return Result<UserLoginCommandResponse>.Failure(401, "Kullanıcı adı veya şifre hatalı!");
 
         if (!user.TFAStatus.Value)
         {
             var token = await jwtProvider.CreateTokenAsync(user, cancellationToken);
-            return new LoginCommandResponse { Token = token };
+            return new UserLoginCommandResponse { Token = token };
         }
 
         user.CreateTFACode();
@@ -52,6 +52,6 @@ public sealed class LoginCommandHandler(
 <p><h4>{user.TFAConfirmCode!.Value}</h4></p>";
         await mailService.SendAsync(user.Email.Value, "Giriş onayı", body);
 
-        return new LoginCommandResponse { TFACode = user.TFACode!.Value };
+        return new UserLoginCommandResponse { TFACode = user.TFACode!.Value };
     }
 }

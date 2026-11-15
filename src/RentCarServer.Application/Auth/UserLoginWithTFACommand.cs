@@ -6,22 +6,22 @@ using TS.Result;
 
 namespace RentCarServer.Application.Auth;
 
-public sealed record LoginWithTFACommand(
+public sealed record UserLoginWithTFACommand(
     string EmailOrUserName,
     string TFACode,
     string TFAConfirmCode
-    ) : IRequest<Result<LoginCommandResponse>>;
+    ) : IRequest<Result<UserLoginCommandResponse>>;
 
-public sealed class LoginWithTFACommandHandler(IUserRepository userRepository, IJwtProvider jwtProvider, IUnitOfWork unitOfWork) : IRequestHandler<LoginWithTFACommand, Result<LoginCommandResponse>>
+public sealed class UserLoginWithTFACommandHandler(IUserRepository userRepository, IJwtProvider jwtProvider, IUnitOfWork unitOfWork) : IRequestHandler<UserLoginWithTFACommand, Result<UserLoginCommandResponse>>
 {
-    public async Task<Result<LoginCommandResponse>> Handle(LoginWithTFACommand request, CancellationToken cancellationToken)
+    public async Task<Result<UserLoginCommandResponse>> Handle(UserLoginWithTFACommand request, CancellationToken cancellationToken)
     {
         var user = await userRepository.FirstOrDefaultAsync(p =>
         p.Email.Value == request.EmailOrUserName
         || p.UserName.Value == request.EmailOrUserName);
 
         if (user is null)
-            return Result<LoginCommandResponse>.Failure("Kullanıcı adı veya şifre hatalı!");
+            return Result<UserLoginCommandResponse>.Failure("Kullanıcı adı veya şifre hatalı!");
 
         if (user.TFAIsCompleted is null
             || user.TFAExpiresDate is null
@@ -31,14 +31,14 @@ public sealed class LoginWithTFACommandHandler(IUserRepository userRepository, I
             || user.TFAExpiresDate.Value < DateTimeOffset.Now
             || (user.TFAConfirmCode.Value != request.TFAConfirmCode
             || user.TFACode.Value != request.TFACode))
-            return Result<LoginCommandResponse>.Failure("TFA kodu geçersiz!");
+            return Result<UserLoginCommandResponse>.Failure("TFA kodu geçersiz!");
 
         user.SetTFAIsCompleted();
         userRepository.Update(user);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         var token = await jwtProvider.CreateTokenAsync(user, cancellationToken);
-        var res = new LoginCommandResponse { Token = token };
+        var res = new UserLoginCommandResponse { Token = token };
         return res;
     }
 }

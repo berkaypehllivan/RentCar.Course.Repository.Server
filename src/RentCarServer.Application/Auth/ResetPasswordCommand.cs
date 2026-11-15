@@ -22,7 +22,7 @@ public sealed class ResetPasswordCommandValidator : AbstractValidator<ResetPassw
     }
 }
 
-internal sealed class ResetPasswordCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork, ILoginTokenRepository loginTokenRepository) : IRequestHandler<ResetPasswordCommand, Result<string>>
+internal sealed class ResetPasswordCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork, IUserLoginTokenRepository loginTokenRepository) : IRequestHandler<ResetPasswordCommand, Result<string>>
 {
     public async Task<Result<string>> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
     {

@@ -4,11 +4,11 @@ using RentCarServer.Domain.LoginTokens;
 
 namespace RentCarServer.Insfractructure.Configurations;
 
-internal sealed class LoginTokenConfiguration : IEntityTypeConfiguration<LoginToken>
+internal sealed class UserLoginTokenConfiguration : IEntityTypeConfiguration<UserLoginToken>
 {
-    public void Configure(EntityTypeBuilder<LoginToken> builder)
+    public void Configure(EntityTypeBuilder<UserLoginToken> builder)
     {
-        builder.ToTable("LoginTokens");
+        builder.ToTable("UserLoginTokens");
         builder.HasKey(x => x.Id);
         builder.ComplexProperty(p => p.Token);
         builder.ComplexProperty(p => p.ExpiresDate);

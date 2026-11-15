@@ -320,15 +320,15 @@ namespace RentCarServer.Insfractructure.Migrations
                     b.ToTable("Extras", (string)null);
                 });
 
-            modelBuilder.Entity("RentCarServer.Domain.LoginTokens.LoginToken", b =>
+            modelBuilder.Entity("RentCarServer.Domain.LoginTokens.CustomerLoginToken", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("CustomerId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.ComplexProperty(typeof(Dictionary<string, object>), "ExpiresDate", "RentCarServer.Domain.LoginTokens.LoginToken.ExpiresDate#ExpiresDate", b1 =>
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "ExpiresDate", "RentCarServer.Domain.LoginTokens.CustomerLoginToken.ExpiresDate#ExpiresDate", b1 =>
                         {
                             b1.IsRequired();
 
@@ -336,7 +336,7 @@ namespace RentCarServer.Insfractructure.Migrations
                                 .HasColumnType("datetimeoffset");
                         });
 
-                    b.ComplexProperty(typeof(Dictionary<string, object>), "IsActive", "RentCarServer.Domain.LoginTokens.LoginToken.IsActive#IsActive", b1 =>
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "IsActive", "RentCarServer.Domain.LoginTokens.CustomerLoginToken.IsActive#IsActive", b1 =>
                         {
                             b1.IsRequired();
 
@@ -344,7 +344,7 @@ namespace RentCarServer.Insfractructure.Migrations
                                 .HasColumnType("bit");
                         });
 
-                    b.ComplexProperty(typeof(Dictionary<string, object>), "Token", "RentCarServer.Domain.LoginTokens.LoginToken.Token#Token", b1 =>
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Token", "RentCarServer.Domain.LoginTokens.CustomerLoginToken.Token#Token", b1 =>
                         {
                             b1.IsRequired();
 
@@ -355,7 +355,45 @@ namespace RentCarServer.Insfractructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LoginTokens", (string)null);
+                    b.ToTable("CustomerLoginTokens", (string)null);
+                });
+
+            modelBuilder.Entity("RentCarServer.Domain.LoginTokens.UserLoginToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "ExpiresDate", "RentCarServer.Domain.LoginTokens.UserLoginToken.ExpiresDate#ExpiresDate", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<DateTimeOffset>("Value")
+                                .HasColumnType("datetimeoffset");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "IsActive", "RentCarServer.Domain.LoginTokens.UserLoginToken.IsActive#IsActive", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<bool>("Value")
+                                .HasColumnType("bit");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Token", "RentCarServer.Domain.LoginTokens.UserLoginToken.Token#Token", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserLoginTokens", (string)null);
                 });
 
             modelBuilder.Entity("RentCarServer.Domain.ProtectionPackages.ProtectionPackage", b =>

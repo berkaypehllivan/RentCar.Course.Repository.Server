@@ -11,22 +11,32 @@ public static class AuthModule
         var app = builder.MapGroup("/auth").WithTags("Auth").AllowAnonymous();
 
         app.MapPost("/login",
-            async (LoginCommand request, ISender sender, CancellationToken cancellationToken) =>
+            async (UserLoginCommand request, ISender sender, CancellationToken cancellationToken) =>
             {
                 var res = await sender.Send(request, cancellationToken);
                 return res.IsSuccessful ? Results.Ok(res) : Results.InternalServerError(res);
             })
-            .Produces<Result<LoginCommandResponse>>()
+            .Produces<Result<UserLoginCommandResponse>>()
             .RequireRateLimiting("login-fixed");
 
         app.MapPost("/login-with-tfa",
-    async (LoginWithTFACommand request, ISender sender, CancellationToken cancellationToken) =>
+    async (UserLoginWithTFACommand request, ISender sender, CancellationToken cancellationToken) =>
     {
         var res = await sender.Send(request, cancellationToken);
         return res.IsSuccessful ? Results.Ok(res) : Results.InternalServerError(res);
     })
-    .Produces<Result<LoginCommandResponse>>()
+    .Produces<Result<UserLoginCommandResponse>>()
     .RequireRateLimiting("login-fixed");
+
+
+        app.MapPost("customer-login",
+            async (CustomerLoginCommand request, ISender sender, CancellationToken cancellationToken) =>
+            {
+                var res = await sender.Send(request, cancellationToken);
+                return res.IsSuccessful ? Results.Ok(res) : Results.InternalServerError(res);
+            })
+            .Produces<Result<CustomerLoginCommandResponse>>()
+            .RequireRateLimiting("login-fixed");
 
         app.MapPost("/forgot-password/{email}",
             async (string email, ISender sender, CancellationToken cancellationToken) =>

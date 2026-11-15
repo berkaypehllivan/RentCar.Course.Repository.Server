@@ -11,7 +11,7 @@ public sealed class CheckLoginTokenBackgroundService(IServiceScopeFactory servic
         var scoped = serviceScopeFactory.CreateScope();
         var srv = scoped.ServiceProvider;
 
-        var loginTokenRepository = srv.GetRequiredService<ILoginTokenRepository>();
+        var loginTokenRepository = srv.GetRequiredService<IUserLoginTokenRepository>();
         var unitOfWork = srv.GetRequiredService<IUnitOfWork>();
         var now = DateTimeOffset.Now;
 

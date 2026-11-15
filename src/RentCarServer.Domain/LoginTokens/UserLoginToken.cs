@@ -3,10 +3,10 @@ using RentCarServer.Domain.LoginTokens.ValueObjects;
 
 namespace RentCarServer.Domain.LoginTokens;
 
-public sealed class LoginToken
+public sealed class UserLoginToken
 {
-    private LoginToken() { }
-    public LoginToken(Token token, IdentityId userId, ExpiresDate expiresDate)
+    private UserLoginToken() { }
+    public UserLoginToken(Token token, IdentityId userId, ExpiresDate expiresDate)
     {
         Id = new(Guid.CreateVersion7());
         SetToken(token);

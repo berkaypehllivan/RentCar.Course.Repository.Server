@@ -5,7 +5,7 @@ using System.Security.Claims;
 namespace RentCarServer.WebAPI.Middlewares;
 
 public sealed class CheckTokenMiddleware(
-    ILoginTokenRepository loginTokenRepository) : IMiddleware
+    IUserLoginTokenRepository loginTokenRepository) : IMiddleware
 {
     public async Task InvokeAsync(HttpContext httpContext, RequestDelegate next)
     {

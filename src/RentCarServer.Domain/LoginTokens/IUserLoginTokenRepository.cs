@@ -2,6 +2,6 @@
 
 namespace RentCarServer.Domain.LoginTokens;
 
-public interface ILoginTokenRepository : IRepository<LoginToken>
+public interface IUserLoginTokenRepository : IRepository<UserLoginToken>
 {
 }
