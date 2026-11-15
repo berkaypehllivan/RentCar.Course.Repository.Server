@@ -233,6 +233,19 @@ namespace RentCarServer.Insfractructure.Migrations
                                 .HasColumnType("nvarchar(MAX)");
                         });
 
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Password", "RentCarServer.Domain.Customers.Customer.Password#Password", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<byte[]>("PasswordHash")
+                                .IsRequired()
+                                .HasColumnType("varbinary(max)");
+
+                            b1.Property<byte[]>("PasswordSalt")
+                                .IsRequired()
+                                .HasColumnType("varbinary(max)");
+                        });
+
                     b.ComplexProperty(typeof(Dictionary<string, object>), "PhoneNumber", "RentCarServer.Domain.Customers.Customer.PhoneNumber#PhoneNumber", b1 =>
                         {
                             b1.IsRequired();
@@ -389,6 +402,14 @@ namespace RentCarServer.Insfractructure.Migrations
                             b1.Property<string>("Value")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "OrderNumber", "RentCarServer.Domain.ProtectionPackages.ProtectionPackage.OrderNumber#OrderNumber", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<int>("Value")
+                                .HasColumnType("int");
                         });
 
                     b.ComplexProperty(typeof(Dictionary<string, object>), "Price", "RentCarServer.Domain.ProtectionPackages.ProtectionPackage.Price#Price", b1 =>

@@ -3,8 +3,12 @@ using GenericRepository;
 using RentCarServer.Application.Behaviors;
 using RentCarServer.Domain.Customers;
 using RentCarServer.Domain.Customers.ValueObjects;
+using RentCarServer.Domain.Users.ValueObjects;
 using TS.MediatR;
 using TS.Result;
+using Email = RentCarServer.Domain.Customers.ValueObjects.Email;
+using FirstName = RentCarServer.Domain.Customers.ValueObjects.FirstName;
+using LastName = RentCarServer.Domain.Customers.ValueObjects.LastName;
 
 namespace RentCarServer.Application.Customers;
 
@@ -48,6 +52,7 @@ internal sealed class CustomerCreateCommandHandler(ICustomerRepository repositor
         Email email = new(request.Email);
         PhoneNumber phoneNumber = new(request.PhoneNumber);
         Address address = new(request.Address);
+        Password password = new("123");
         DriverLicenceIssueDate driverLicenceIssueDate = new(request.DriverLicenceIssueDate);
 
         Customer customer = new(
@@ -59,6 +64,7 @@ internal sealed class CustomerCreateCommandHandler(ICustomerRepository repositor
             phoneNumber,
             address,
             driverLicenceIssueDate,
+            password,
             request.IsActive
         );
 

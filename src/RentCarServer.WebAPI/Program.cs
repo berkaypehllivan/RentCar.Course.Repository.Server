@@ -115,7 +115,6 @@ app.MapReservation();
 app.MapReservationForm();
 app.MapDashboard();
 
-app.MapSeedData();
 
 app.MapGet("/", () => "Hello world").RequireAuthorization();
 

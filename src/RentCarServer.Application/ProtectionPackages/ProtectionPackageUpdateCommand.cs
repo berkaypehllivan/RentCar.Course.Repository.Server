@@ -1,5 +1,6 @@
 using FluentValidation;
 using GenericRepository;
+using Microsoft.EntityFrameworkCore;
 using RentCarServer.Application.Behaviors;
 using RentCarServer.Domain.ProtectionPackages;
 using RentCarServer.Domain.ProtectionPackages.ValueObjects;
@@ -10,7 +11,7 @@ using TS.Result;
 namespace RentCarServer.Application.ProtectionPackages;
 
 [Permission("protection-package:update")]
-public sealed record ProtectionPackageUpdateCommand(Guid Id, string Name, decimal Price, bool IsRecommended, bool IsActive, List<string> Coverages) : IRequest<Result<string>>;
+public sealed record ProtectionPackageUpdateCommand(Guid Id, string Name, decimal Price, bool IsRecommended, int OrderNumber, List<string> Coverages, bool IsActive) : IRequest<Result<string>>;
 
 public sealed class ProtectionPackageUpdateCommandValidator : AbstractValidator<ProtectionPackageUpdateCommand>
 {
@@ -40,6 +41,22 @@ internal sealed class ProtectionPackageUpdateCommandHandler(
             {
                 return Result<string>.Failure("Güvence paketi adı daha önce tanımlanmış");
             }
+        }
+
+        if (package.OrderNumber.Value != request.OrderNumber)
+        {
+            var packages = await repository
+                .WhereWithTracking(p => p.Id != package.Id)
+                .OrderBy(i => i.OrderNumber.Value)
+                .ToListAsync(cancellationToken);
+
+            packages.Insert(request.OrderNumber - 1, package);
+
+            foreach (var (item, index) in packages.Select((item, index) => (item, index)))
+            {
+                item.SetOrderNumber(new(index +1));
+            }
+
         }
 
         Name name = new(request.Name);

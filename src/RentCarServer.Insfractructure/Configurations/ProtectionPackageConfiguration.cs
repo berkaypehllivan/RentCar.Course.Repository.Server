@@ -13,6 +13,7 @@ internal sealed class ProtectionPackageConfiguration : IEntityTypeConfiguration<
         builder.ComplexProperty(i => i.Name);
         builder.ComplexProperty(i => i.Price);
         builder.ComplexProperty(i => i.IsRecommended);
+        builder.ComplexProperty(i => i.OrderNumber);
         builder.OwnsMany(i => i.Coverages);
     }
 }
