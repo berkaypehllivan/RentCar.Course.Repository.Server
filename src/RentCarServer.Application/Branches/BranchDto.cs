@@ -23,11 +23,11 @@ public static class BranchExtensions
         Address = s.Entity.Address,
         Contact = s.Entity.Contact,
         CreatedAt = s.Entity.CreatedAt,
-        CreatedBy = s.Entity.CreatedBy,
+        CreatedBy = s.Entity.CreatedBy!,
         IsActive = s.Entity.IsActive,
         UpdatedAt = s.Entity.UpdatedAt,
         UpdatedBy = s.Entity.UpdatedBy == null ? null : s.Entity.UpdatedBy.Value,
-        CreatedFullName = s.CreatedUser.FullName.Value,
+        CreatedFullName = s.CreatedUser != null ? s.CreatedUser.FullName.Value : null,
         UpdatedFullName = s.UpdatedUser == null ? null : s.UpdatedUser.FullName.Value
     })
     .AsQueryable();

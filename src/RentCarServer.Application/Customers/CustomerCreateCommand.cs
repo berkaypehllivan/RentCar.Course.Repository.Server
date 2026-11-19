@@ -3,12 +3,9 @@ using GenericRepository;
 using RentCarServer.Application.Behaviors;
 using RentCarServer.Domain.Customers;
 using RentCarServer.Domain.Customers.ValueObjects;
-using RentCarServer.Domain.Users.ValueObjects;
+using RentCarServer.Domain.Shared;
 using TS.MediatR;
 using TS.Result;
-using Email = RentCarServer.Domain.Customers.ValueObjects.Email;
-using FirstName = RentCarServer.Domain.Customers.ValueObjects.FirstName;
-using LastName = RentCarServer.Domain.Customers.ValueObjects.LastName;
 
 namespace RentCarServer.Application.Customers;
 
@@ -20,7 +17,9 @@ public sealed record CustomerCreateCommand(
     DateOnly DateOfBirth,
     string Email,
     string PhoneNumber,
-    string Address,
+    string City,
+    string District,
+    string FullAddress,
     DateOnly DriverLicenceIssueDate,
     bool IsActive
 ) : IRequest<Result<string>>;
@@ -51,7 +50,7 @@ internal sealed class CustomerCreateCommandHandler(ICustomerRepository repositor
         DateOfBirth dateOfBirth = new(request.DateOfBirth);
         Email email = new(request.Email);
         PhoneNumber phoneNumber = new(request.PhoneNumber);
-        Address address = new(request.Address);
+        Address address = new(request.City, request.District, request.FullAddress);
         Password password = new("123");
         DriverLicenceIssueDate driverLicenceIssueDate = new(request.DriverLicenceIssueDate);
 

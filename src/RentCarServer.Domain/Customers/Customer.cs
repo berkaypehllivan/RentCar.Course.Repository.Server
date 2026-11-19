@@ -1,9 +1,6 @@
 ﻿using RentCarServer.Domain.Abstractions;
 using RentCarServer.Domain.Customers.ValueObjects;
-using RentCarServer.Domain.Users.ValueObjects;
-using Email = RentCarServer.Domain.Customers.ValueObjects.Email;
-using FirstName = RentCarServer.Domain.Customers.ValueObjects.FirstName;
-using LastName = RentCarServer.Domain.Customers.ValueObjects.LastName;
+using RentCarServer.Domain.Shared;
 
 namespace RentCarServer.Domain.Customers;
 

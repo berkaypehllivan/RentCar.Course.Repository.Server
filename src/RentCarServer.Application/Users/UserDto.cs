@@ -42,7 +42,7 @@ public static class UserExtensions
                 BranchName = s.Branch.Name.Value,
                 IsActive = s.Entity.IsActive,
                 CreatedAt = s.Entity.CreatedAt,
-                CreatedBy = s.Entity.CreatedBy,
+                CreatedBy = s.Entity.CreatedBy!,
                 CreatedFullName = s.Entity.FullName.Value,
                 UpdatedAt = s.Entity.UpdatedAt,
                 UpdatedBy = s.Entity.UpdatedBy != null ? s.Entity.UpdatedBy.Value : null,

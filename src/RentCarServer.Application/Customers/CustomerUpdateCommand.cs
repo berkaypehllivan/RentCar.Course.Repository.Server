@@ -3,6 +3,7 @@ using GenericRepository;
 using RentCarServer.Application.Behaviors;
 using RentCarServer.Domain.Customers;
 using RentCarServer.Domain.Customers.ValueObjects;
+using RentCarServer.Domain.Shared;
 using TS.MediatR;
 using TS.Result;
 
@@ -17,7 +18,9 @@ public sealed record CustomerUpdateCommand(
     DateOnly DateOfBirth,
     string Email,
     string PhoneNumber,
-    string Address,
+    string City,
+    string District,
+    string FullAddress,
     DateOnly DriverLicenceIssueDate,
     bool IsActive
 ) : IRequest<Result<string>>;
@@ -56,7 +59,7 @@ internal sealed class CustomerUpdateCommandHandler(ICustomerRepository repositor
         DateOfBirth dateOfBirth = new(request.DateOfBirth);
         Email email = new(request.Email);
         PhoneNumber phoneNumber = new(request.PhoneNumber);
-        Address address = new(request.Address);
+        Address address = new(request.City, request.District, request.FullAddress);
         DriverLicenceIssueDate driverLicenceIssueDate = new(request.DriverLicenceIssueDate);
 
         customer.SetFirstName(firstName);

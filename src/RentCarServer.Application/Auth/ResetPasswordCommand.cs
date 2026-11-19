@@ -2,8 +2,8 @@
 using GenericRepository;
 using Microsoft.EntityFrameworkCore;
 using RentCarServer.Domain.LoginTokens;
+using RentCarServer.Domain.Shared;
 using RentCarServer.Domain.Users;
-using RentCarServer.Domain.Users.ValueObjects;
 using TS.MediatR;
 using TS.Result;
 

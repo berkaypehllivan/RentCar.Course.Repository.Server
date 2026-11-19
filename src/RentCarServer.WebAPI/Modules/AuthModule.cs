@@ -1,4 +1,5 @@
 ﻿using RentCarServer.Application.Auth;
+using RentCarServer.Application.Auth.Customers;
 using TS.MediatR;
 using TS.Result;
 
@@ -28,7 +29,7 @@ public static class AuthModule
     .Produces<Result<UserLoginCommandResponse>>()
     .RequireRateLimiting("login-fixed");
 
-
+        //Customer login side
         app.MapPost("customer-login",
             async (CustomerLoginCommand request, ISender sender, CancellationToken cancellationToken) =>
             {
@@ -37,6 +38,15 @@ public static class AuthModule
             })
             .Produces<Result<CustomerLoginCommandResponse>>()
             .RequireRateLimiting("login-fixed");
+
+        app.MapPost("/customer-register",
+    async (CustomerRegisterCommand request, ISender sender, CancellationToken cancellationToken) =>
+    {
+        var res = await sender.Send(request, cancellationToken);
+        return res.IsSuccessful ? Results.Ok(res) : Results.InternalServerError(res);
+    })
+    .Produces<Result<string>>()
+    .RequireRateLimiting("register-fixed");
 
         app.MapPost("/forgot-password/{email}",
             async (string email, ISender sender, CancellationToken cancellationToken) =>

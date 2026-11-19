@@ -131,7 +131,7 @@ public static class ReservationExtensions
                 Customer = new ReservationCustomerDto
                 {
                     Email = s.Customer.Email.Value,
-                    FullAddress = s.Customer.Address.Value,
+                    FullAddress = s.Customer.Address.FullAddress,
                     FullName = s.Customer.FirstName.Value + " " + s.Customer.LastName.Value,
                     IdentityNumber = s.Customer.IdentityNumber.Value,
                     PhoneNumber = s.Customer.PhoneNumber.Value
@@ -185,8 +185,8 @@ public static class ReservationExtensions
                 PaymentInformation = s.Entity.PaymentInformation,
                 IsActive = s.Entity.IsActive,
                 CreatedAt = s.Entity.CreatedAt,
-                CreatedBy = s.Entity.CreatedBy,
-                CreatedFullName = s.CreatedUser.FullName.Value,
+                CreatedBy = s.Entity.CreatedBy!,
+                CreatedFullName = s.CreatedUser != null ? s.CreatedUser.FullName.Value : null,
                 UpdatedAt = s.Entity.UpdatedAt,
                 UpdatedBy = s.Entity.UpdatedBy != null ? s.Entity.UpdatedBy.Value : null,
                 UpdatedFullName = s.UpdatedUser != null ? s.UpdatedUser.FullName.Value : null

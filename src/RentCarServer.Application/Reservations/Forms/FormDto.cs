@@ -57,7 +57,7 @@ public static class FormExtensions
                 Customer = new ReservationCustomerDto
                 {
                     Email = s.Customer.Email.Value,
-                    FullAddress = s.Customer.Address.Value,
+                    FullAddress = s.Customer.Address.FullAddress,
                     FullName = s.Customer.FirstName.Value + " " + s.Customer.LastName.Value,
                     IdentityNumber = s.Customer.IdentityNumber.Value,
                     PhoneNumber = s.Customer.PhoneNumber.Value

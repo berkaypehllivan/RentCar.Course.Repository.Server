@@ -12,7 +12,9 @@ public sealed class CustomerDto : EntityDto
     public DateOnly DateOfBirth { get; set; }
     public string Email { get; set; } = default!;
     public string PhoneNumber { get; set; } = default!;
-    public string Address { get; set; } = default!;
+    public string City { get; set; } = default!;
+    public string District { get; set; } = default!;
+    public string FullAddress { get; set; } = default!;
     public DateOnly DriverLicenceIssueDate { get; set; } = default!;
 }
 
@@ -30,12 +32,13 @@ public static class CustomerExtensions
             DateOfBirth = s.Entity.DateOfBirth.Value,
             Email = s.Entity.Email.Value,
             PhoneNumber = s.Entity.PhoneNumber.Value,
-            Address = s.Entity.Address.Value,
+            City = s.Entity.Address.City,
+            District = s.Entity.Address.District,
+            FullAddress = s.Entity.Address.FullAddress,
             DriverLicenceIssueDate = s.Entity.DriverLicenceIssueDate.Value,
             IsActive = s.Entity.IsActive,
             CreatedAt = s.Entity.CreatedAt,
-            CreatedBy = s.Entity.CreatedBy,
-            CreatedFullName = s.CreatedUser.FullName.Value,
+            CreatedFullName = s.CreatedUser != null ? s.CreatedUser.FullName.Value : null,
             UpdatedAt = s.Entity.UpdatedAt,
             UpdatedBy = s.Entity.UpdatedBy != null ? s.Entity.UpdatedBy!.Value : null,
             UpdatedFullName = s.UpdatedUser != null ? s.UpdatedUser.FullName.Value : null,

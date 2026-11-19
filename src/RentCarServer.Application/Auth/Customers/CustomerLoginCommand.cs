@@ -4,7 +4,7 @@ using RentCarServer.Domain.Customers;
 using TS.MediatR;
 using TS.Result;
 
-namespace RentCarServer.Application.Auth;
+namespace RentCarServer.Application.Auth.Customers;
 
 public sealed record CustomerLoginCommand(
     string Email,
