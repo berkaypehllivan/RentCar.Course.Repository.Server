@@ -23,8 +23,8 @@ public sealed class Reservation : Entity, IAggregate
         DeliveryTime deliveryTime,
         IdentityId vehicleId,
         Price vehicleDailyPrice,
-        IdentityId? protectionPackageId,
-        Price? protectionPackagePrice,
+        IdentityId protectionPackageId,
+        Price protectionPackagePrice,
         IEnumerable<ReservationExtra> reservationExtras,
         Note note,
         PaymentInformation paymentInformation,
@@ -43,8 +43,8 @@ public sealed class Reservation : Entity, IAggregate
         SetDeliveryTime(deliveryTime);
         SetVehicleId(vehicleId);
         SetVehicleDailyPrice(vehicleDailyPrice);
-        if (protectionPackageId is not null) SetProtectionPackageId(protectionPackageId);
-        if (protectionPackagePrice is not null) SetProtectionPackagePrice(protectionPackagePrice);
+        SetProtectionPackageId(protectionPackageId);
+        SetProtectionPackagePrice(protectionPackagePrice);
         SetNote(note);
         SetPaymentInformation(paymentInformation);
         SetReservationStatus(status);
@@ -71,8 +71,8 @@ public sealed class Reservation : Entity, IAggregate
     public IdentityId VehicleId { get; private set; } = default!;
     public Price VehicleDailyPrice { get; private set; } = default!;
     public IReadOnlyCollection<ReservationExtra> ReservationExtras => _reservationExtras;
-    public IdentityId? ProtectionPackageId { get; private set; }
-    public Price? ProtectionPackagePrice { get; private set; }
+    public IdentityId ProtectionPackageId { get; private set; } = default!;
+    public Price ProtectionPackagePrice { get; private set; } = default!;
     public Note Note { get; private set; } = default!;
     public PaymentInformation PaymentInformation { get; private set; } = default!;
     public Status Status { get; private set; } = default!;
@@ -93,8 +93,8 @@ public sealed class Reservation : Entity, IAggregate
         DeliveryTime deliveryTime,
         IdentityId vehicleId,
         Price vehicleDailyPrice,
-        IdentityId? protectionPackageId,
-        Price? protectionPackagePrice,
+        IdentityId protectionPackageId,
+        Price protectionPackagePrice,
         IEnumerable<ReservationExtra> reservationExtras,
         Note note,
         PaymentInformation paymentInformation,

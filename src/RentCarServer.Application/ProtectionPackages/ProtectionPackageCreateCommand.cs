@@ -22,8 +22,8 @@ public sealed class ProtectionPackageCreateCommandValidator : AbstractValidator<
 {
     public ProtectionPackageCreateCommandValidator()
     {
-        RuleFor(p => p.Name).NotEmpty().WithMessage("Geçerli bir paket adý girin");
-        RuleFor(p => p.Price).GreaterThan(-1).WithMessage("Fiyat pozitif olmalý");
+        RuleFor(p => p.Name).NotEmpty().WithMessage("Geçerli bir paket adı girin.");
+        RuleFor(p => p.Price).GreaterThan(-1).WithMessage("Fiyat pozitif olmalı.");
     }
 }
 
@@ -54,6 +54,6 @@ internal sealed class ProtectionPackageCreateCommandHandler(
         repository.Add(package);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return "Güvence paketi baþarýyla kaydedildi";
+        return "Güvence paketi başarıyla kaydedildi";
     }
 }

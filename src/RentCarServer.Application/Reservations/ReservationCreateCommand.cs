@@ -34,8 +34,8 @@ public sealed record ReservationCreateCommand(
     TimeOnly DeliveryTime,
     Guid VehicleId,
     decimal VehicleDailyPrice,
-    Guid? ProtectionPackageId,
-    decimal? ProtectionPackagePrice,
+    Guid ProtectionPackageId,
+    decimal ProtectionPackagePrice,
     IEnumerable<ReservationExtra> ReservationExtras,
     string Note,
     CreditCardInformation CreditCardInformation,
@@ -93,7 +93,8 @@ internal sealed class ReservationCreateCommandHandler(
     ICustomerRepository customerRepository,
     IVehicleRepository vehicleRepository,
     IUnitOfWork unitOfWork,
-    IClaimContext claimContext
+    IClaimContext claimContext,
+    IVehicleAvailabilityService vehicleAvailabilityService
     ) : IRequestHandler<ReservationCreateCommand, Result<string>>
 {
     public async Task<Result<string>> Handle(ReservationCreateCommand request, CancellationToken cancellationToken)
@@ -116,33 +117,14 @@ internal sealed class ReservationCreateCommandHandler(
 
         #endregion
 
-        #region Araç Müsaitlik Kontrolü
         var requestedPickUp = request.PickUpDate.ToDateTime(request.PickUpTime);
         var requestedDelivery = request.DeliveryDate.ToDateTime(request.DeliveryTime);
 
-        var possibleOverlaps = await reservationRepository
-            .Where(r => r.VehicleId == request.VehicleId
-    && (r.Status.Value == Status.Pending.Value || r.Status.Value == Status.Delivered.Value))
-            .Select(s => new
-            {
-                Id = s.Id,
+        var isAvailable = await vehicleAvailabilityService.IsAvailableAsync(
+            new IdentityId(request.VehicleId), requestedPickUp, requestedDelivery, cancellationToken);
 
-                VehicleId = s.VehicleId,
-                DeliveryDate = s.DeliveryDate.Value,
-                DeliveryTime = s.DeliveryTime.Value,
-                PickUpDate = s.PickUpDate.Value,
-                PickUpTime = s.PickUpTime.Value,
-            })
-            .ToListAsync(cancellationToken);
-
-        var overlaps = possibleOverlaps.Any(r =>
-            requestedPickUp < r.DeliveryDate.ToDateTime(r.DeliveryTime).AddHours(1) &&
-            requestedDelivery > r.PickUpDate.ToDateTime(r.PickUpTime)
-        );
-
-        if (overlaps)
+        if (!isAvailable)
             return Result<string>.Failure("Seçilen araç, belirtilen tarih ve saat aralığında müsait değil.");
-        #endregion
 
         #region Ödeme İşlemi
 
@@ -162,8 +144,8 @@ internal sealed class ReservationCreateCommandHandler(
         IdentityId vehicleId = new(request.VehicleId);
         Price vehicleDailyPrice = new(request.VehicleDailyPrice);
 
-        IdentityId? protectionPackageId = request.ProtectionPackageId is not null ? new(request.ProtectionPackageId.Value) : null;
-        Price? protectionPackagePrice = request.ProtectionPackagePrice is not null ? new(request.ProtectionPackagePrice.Value) : null;
+        IdentityId protectionPackageId = new(request.ProtectionPackageId);
+        Price protectionPackagePrice = new(request.ProtectionPackagePrice);
         IEnumerable<ReservationExtra> reservationExtras = request.ReservationExtras.Select(s => new ReservationExtra(s.ExtraId, s.Price));
         Note note = new(request.Note);
         PaymentInformation paymentInformation = new(

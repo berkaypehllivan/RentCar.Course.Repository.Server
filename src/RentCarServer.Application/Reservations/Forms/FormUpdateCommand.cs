@@ -46,7 +46,7 @@ internal class FormUpdateCommandHander(
         List<Supplies> supplies = request.Supplies?.Select(s => new Supplies(s)).ToList() ?? [];
         List<ImageUrl> imageUrls = request.Files.Select(s =>
         {
-            var fileName = FileService.FileSaveToServer(s, "wwwroot/forms/");
+            var fileName = FileService.FileSaveToServer(s, "wwwroot/images/");
             return new ImageUrl(fileName);
         }).ToList();
         List<Damage> damages = request.Damages ?? [];

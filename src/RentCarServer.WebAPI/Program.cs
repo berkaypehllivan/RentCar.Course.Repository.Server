@@ -109,6 +109,7 @@ app.MapControllers()
     .RequireRateLimiting("fixed")
     .RequireAuthorization();
 app.MapAuth();
+app.MapBooking();
 app.MapBranch();
 app.MapRole();
 app.MapPermission();

@@ -19,6 +19,7 @@ public sealed class ProtectionPackage : Entity
         SetIsRecommended(isRecommended);
         SetCoverages(coverages);
         SetStatus(isActive);
+        SetOrderNumber(ordernumber);
     }
 
     public Name Name { get; private set; } = default!;
