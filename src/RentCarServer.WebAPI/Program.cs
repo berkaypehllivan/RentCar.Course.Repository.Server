@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.OData;
-using Microsoft.AspNetCore.RateLimiting;
 using RentCarServer.Application;
 using RentCarServer.Insfractructure;
 using RentCarServer.WebAPI;
@@ -8,6 +7,7 @@ using RentCarServer.WebAPI.Middlewares;
 using RentCarServer.WebAPI.Modules;
 using Scalar.AspNetCore;
 using System.Threading.RateLimiting;
+using TS.Result;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,45 +18,37 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
+var limitFactor = builder.Environment.IsDevelopment() ? 20 : 1;
+
 builder.Services.AddRateLimiter(cfr =>
 {
-    cfr.AddFixedWindowLimiter("fixed", opt =>
-    {
-        opt.PermitLimit = 100;
-        opt.Window = TimeSpan.FromSeconds(1);
-        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-    });
-    cfr.AddFixedWindowLimiter("login-fixed", opt =>
-    {
-        opt.PermitLimit = 3;
-        opt.Window = TimeSpan.FromMinutes(1);
-        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-    });
-    cfr.AddFixedWindowLimiter("register-fixed", opt =>
-    {
-        opt.PermitLimit = 5;
-        opt.Window = TimeSpan.FromHours(1);
-        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-    });
+    cfr.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 
-    cfr.AddFixedWindowLimiter("forgot-password-fixed", opt =>
+    cfr.OnRejected = async (context, cancellationToken) =>
     {
-        opt.PermitLimit = 3;
-        opt.Window = TimeSpan.FromMinutes(5);
-        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-    });
-    cfr.AddFixedWindowLimiter("reset-password-fixed", opt =>
-    {
-        opt.PermitLimit = 3;
-        opt.Window = TimeSpan.FromMinutes(1);
-        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-    });
-    cfr.AddFixedWindowLimiter("check-forgot-password-code-fixed", opt =>
-    {
-        opt.PermitLimit = 5;
-        opt.Window = TimeSpan.FromMinutes(1);
-        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-    });
+        var message = "Çok fazla deneme yaptınız. Lütfen biraz bekleyip tekrar deneyin.";
+
+        if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
+        {
+            var seconds = (int)Math.Ceiling(retryAfter.TotalSeconds);
+            context.HttpContext.Response.Headers.RetryAfter = seconds.ToString();
+            message = $"Çok fazla deneme yaptınız. Lütfen {seconds} saniye sonra tekrar deneyin.";
+        }
+
+        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        await context.HttpContext.Response.WriteAsJsonAsync(
+            Result<string>.Failure(StatusCodes.Status429TooManyRequests, message),
+            cancellationToken);
+    };
+
+    cfr.AddIpFixedWindowPolicy("fixed", 100, TimeSpan.FromSeconds(1));
+    cfr.AddIpFixedWindowPolicy("login-fixed", 5 * limitFactor, TimeSpan.FromMinutes(1));
+    cfr.AddIpFixedWindowPolicy("change-password-fixed", 5 * limitFactor, TimeSpan.FromMinutes(1));
+    cfr.AddIpFixedWindowPolicy("register-fixed", 5 * limitFactor, TimeSpan.FromHours(1));
+    cfr.AddIpFixedWindowPolicy("forgot-password-fixed", 3 * limitFactor, TimeSpan.FromMinutes(5));
+    cfr.AddIpFixedWindowPolicy("reset-password-fixed", 3 * limitFactor, TimeSpan.FromMinutes(1));
+    cfr.AddIpFixedWindowPolicy("check-forgot-password-code-fixed", 5 * limitFactor, TimeSpan.FromMinutes(1));
+
 });
 
 builder.Services
@@ -109,7 +101,11 @@ app.MapControllers()
     .RequireRateLimiting("fixed")
     .RequireAuthorization();
 app.MapAuth();
+
+//UI Part
 app.MapBooking();
+app.MapCustomerPortal();
+
 app.MapBranch();
 app.MapRole();
 app.MapPermission();

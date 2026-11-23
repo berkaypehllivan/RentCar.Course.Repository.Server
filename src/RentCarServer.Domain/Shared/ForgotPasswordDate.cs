@@ -1,3 +1,3 @@
-﻿namespace RentCarServer.Domain.Users.ValueObjects;
+﻿namespace RentCarServer.Domain.Shared;
 
 public sealed record ForgotPasswordDate(DateTimeOffset Value);

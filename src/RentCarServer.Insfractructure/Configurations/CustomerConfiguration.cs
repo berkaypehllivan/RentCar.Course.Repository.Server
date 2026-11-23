@@ -19,6 +19,9 @@ internal sealed class CustomerConfiguration : IEntityTypeConfiguration<Customer>
         builder.ComplexProperty(x => x.PhoneNumber);
         builder.ComplexProperty(x => x.Address);
         builder.ComplexProperty(x => x.Password);
+        builder.ComplexProperty(i => i.ForgotPasswordCode);
+        builder.ComplexProperty(i => i.ForgotPasswordDate);
+        builder.ComplexProperty(i => i.IsForgotPasswordCompleted);
         builder.ComplexProperty(x => x.DriverLicenceIssueDate);
     }
 }

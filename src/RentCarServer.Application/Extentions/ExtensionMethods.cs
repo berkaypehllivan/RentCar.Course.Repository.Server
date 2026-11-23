@@ -1,7 +1,7 @@
 ﻿using RentCarServer.Domain.Abstractions;
 using RentCarServer.Domain.Users;
 
-namespace RentCarServer.Application;
+namespace RentCarServer.Application.Extentions;
 
 internal static class ExtensionMethods
 {

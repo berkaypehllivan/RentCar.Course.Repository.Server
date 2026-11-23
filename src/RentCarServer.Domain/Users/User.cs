@@ -68,7 +68,6 @@ public sealed class User : Entity
     public void SetFullName()
     {
         FullName = new(FirstName.Value + " " + LastName.Value + " (" + Email.Value + ")");
-        IsForgotPasswordCompleted = new(true);
     }
 
     public void SetTFAStatus(TFAStatus tfaStatus) => TFAStatus = tfaStatus;

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using RentCarServer.Application.Customers;
+﻿using RentCarServer.Application.Customers;
 using TS.MediatR;
 using TS.Result;
 
@@ -10,7 +9,7 @@ public static class CustomerModule
     public static void MapCustomer(this IEndpointRouteBuilder builder)
     {
         var app = builder.MapGroup("/customers")
-            .RequireRateLimiting("fixed")
+            .RequireRateLimiting("change-password-fixed")
             .RequireAuthorization()
             .WithTags("Customers");
 

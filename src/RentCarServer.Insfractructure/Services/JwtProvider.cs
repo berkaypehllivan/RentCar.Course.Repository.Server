@@ -85,7 +85,8 @@ internal sealed class JwtProvider(
         {
             new Claim(ClaimTypes.NameIdentifier, customer.Id),
             new Claim("fullName",customer.FirstName.Value + " " + customer.LastName.Value),
-            new Claim("email",customer.Email.Value)
+            new Claim("email",customer.Email.Value),
+            new Claim("user_type", "customer")
         };
 
         SymmetricSecurityKey securityKey = new(Encoding.UTF8.GetBytes(options.Value.SecretKey));

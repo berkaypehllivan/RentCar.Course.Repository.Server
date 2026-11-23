@@ -30,7 +30,9 @@ public sealed class Customer : Entity
         SetDriverLicenceIssueDate(driverLicenceIssueDate);
         SetStatus(isActive);
         SetPassword(password);
+        SetIsForgotPasswordCompleted(new(true));
     }
+
 
     #region Behaviors
     public FirstName FirstName { get; private set; } = default!;
@@ -42,6 +44,11 @@ public sealed class Customer : Entity
     public DriverLicenceIssueDate DriverLicenceIssueDate { get; private set; } = default!;
     public Address Address { get; private set; } = default!;
     public Password Password { get; private set; } = default!;
+    public ForgotPasswordCode? ForgotPasswordCode { get; private set; }
+    public ForgotPasswordDate? ForgotPasswordDate { get; private set; }
+    public IsForgotPasswordCompleted IsForgotPasswordCompleted { get; private set; } = default!;
+
+
     public void SetFirstName(FirstName firstName) => FirstName = firstName;
     public void SetLastName(LastName lastName) => LastName = lastName;
     public void SetIdentityNumber(IdentityNumber identityNumber) => IdentityNumber = identityNumber;
@@ -58,6 +65,18 @@ public sealed class Customer : Entity
         var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
         return computedHash.SequenceEqual(Password.PasswordHash);
     }
+
+    public void SetIsForgotPasswordCompleted(IsForgotPasswordCompleted isForgotPasswordCompleted) => IsForgotPasswordCompleted = isForgotPasswordCompleted;
+
+    public bool IsForgotPasswordCodeValid(Guid code)
+    {
+        if (ForgotPasswordCode is null || ForgotPasswordDate is null) return false;
+        if (IsForgotPasswordCompleted.Value) return false;
+        if (ForgotPasswordCode.Value != code) return false;
+
+        return ForgotPasswordDate.Value.AddDays(1) >= DateTimeOffset.Now;
+    }
+
     #endregion
 
 

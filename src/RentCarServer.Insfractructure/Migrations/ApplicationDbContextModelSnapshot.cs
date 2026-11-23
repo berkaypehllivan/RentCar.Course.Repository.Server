@@ -223,6 +223,18 @@ namespace RentCarServer.Insfractructure.Migrations
                                 .HasColumnType("nvarchar(MAX)");
                         });
 
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "ForgotPasswordCode", "RentCarServer.Domain.Customers.Customer.ForgotPasswordCode#ForgotPasswordCode", b1 =>
+                        {
+                            b1.Property<Guid>("Value")
+                                .HasColumnType("uniqueidentifier");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "ForgotPasswordDate", "RentCarServer.Domain.Customers.Customer.ForgotPasswordDate#ForgotPasswordDate", b1 =>
+                        {
+                            b1.Property<DateTimeOffset>("Value")
+                                .HasColumnType("datetimeoffset");
+                        });
+
                     b.ComplexProperty(typeof(Dictionary<string, object>), "IdentityNumber", "RentCarServer.Domain.Customers.Customer.IdentityNumber#IdentityNumber", b1 =>
                         {
                             b1.IsRequired();
@@ -230,6 +242,14 @@ namespace RentCarServer.Insfractructure.Migrations
                             b1.Property<string>("Value")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(MAX)");
+                        });
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "IsForgotPasswordCompleted", "RentCarServer.Domain.Customers.Customer.IsForgotPasswordCompleted#IsForgotPasswordCompleted", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<bool>("Value")
+                                .HasColumnType("bit");
                         });
 
                     b.ComplexProperty(typeof(Dictionary<string, object>), "LastName", "RentCarServer.Domain.Customers.Customer.LastName#LastName", b1 =>
@@ -500,7 +520,7 @@ namespace RentCarServer.Insfractructure.Migrations
                     b.Property<Guid>("PickUpLocationId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("ProtectionPackageId")
+                    b.Property<Guid>("ProtectionPackageId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
@@ -584,6 +604,8 @@ namespace RentCarServer.Insfractructure.Migrations
 
                     b.ComplexProperty(typeof(Dictionary<string, object>), "ProtectionPackagePrice", "RentCarServer.Domain.Reservations.Reservation.ProtectionPackagePrice#Price", b1 =>
                         {
+                            b1.IsRequired();
+
                             b1.Property<decimal>("Value")
                                 .HasColumnType("money");
                         });
